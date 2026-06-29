@@ -1,0 +1,2 @@
+model,version,axis,domain,score,ci_low,ci_high,judge_alpha,n
+# K-SOVA-Bench 베이스라인 (예정). 분야×축 분리·신뢰구간·judge 간 α 포함.
