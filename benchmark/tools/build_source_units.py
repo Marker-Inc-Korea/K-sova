@@ -156,7 +156,7 @@ def normalize_row(row: dict[str, Any]) -> dict[str, Any] | None:
     if not source_url or not category:
         return None
 
-    is_family = source_file == "official_source_expansion_1000_20260707.jsonl"
+    is_family = source_file.startswith("official_source_expansion_") or str(row.get("status", "")).startswith("candidate_official")
     status = "source_family_candidate" if is_family else "reviewed_source_candidate"
     if not evidence and is_family:
         evidence = item_focus
@@ -204,6 +204,19 @@ def build_units(paths: list[Path]) -> list[dict[str, Any]]:
     return sorted(by_key.values(), key=lambda r: (r["domain"], r["axis"], r["institution"], r["category"], r["id"]))
 
 
+def filter_rows(rows: list[dict[str, Any]], exclude_host_regex: str | None) -> list[dict[str, Any]]:
+    if not exclude_host_regex:
+        return rows
+    pattern = re.compile(exclude_host_regex)
+    kept = []
+    for row in rows:
+        host = urlparse(row["source_url"]).netloc.lower()
+        if pattern.search(host):
+            continue
+        kept.append(row)
+    return kept
+
+
 def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as f:
@@ -216,6 +229,7 @@ def write_summary(path: Path, rows: list[dict[str, Any]]) -> None:
     by_axis = collections.Counter(r["axis"] for r in rows)
     by_status = collections.Counter(r["status"] for r in rows)
     by_license = collections.Counter(r["license_status"] for r in rows)
+    by_host = collections.Counter(urlparse(r["source_url"]).netloc.lower() for r in rows)
     target_units = sum(r.get("target_source_units") or 0 for r in rows)
     target_items = sum(r.get("target_items") or 0 for r in rows)
     concrete = [r for r in rows if r["status"] != "source_family_candidate"]
@@ -250,11 +264,14 @@ def write_summary(path: Path, rows: list[dict[str, Any]]) -> None:
     lines += ["", "## By License Status", "", "| license_status | n |", "|---|---:|"]
     for k, v in sorted(by_license.items()):
         lines.append(f"| {k} | {v} |")
+    lines += ["", "## Top Hosts", "", "| host | n |", "|---|---:|"]
+    for k, v in by_host.most_common(20):
+        lines.append(f"| {k} | {v} |")
     lines += [
         "",
         "## Gate",
         "",
-        "Only concrete `reviewed_source_candidate` rows with an evidence summary should be used for candidate item generation. ",
+        "Only concrete `reviewed_source_candidate` rows with an evidence summary should be used for candidate item generation.",
         "`source_family_candidate` rows are collection work items; they require URL, license, access-date, and source-unit review first.",
         "",
     ]
@@ -264,11 +281,14 @@ def write_summary(path: Path, rows: list[dict[str, Any]]) -> None:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--inputs", nargs="*", default=DEFAULT_INPUTS)
+    ap.add_argument("--extra-inputs", nargs="*", default=[])
+    ap.add_argument("--exclude-host-regex")
     ap.add_argument("--out", default="benchmark/sources/source_units_v1_20260709.jsonl")
     ap.add_argument("--summary", default="benchmark/sources/source_units_v1_20260709_audit.md")
     args = ap.parse_args()
 
-    rows = build_units([Path(p) for p in args.inputs])
+    input_paths = [Path(p) for p in args.inputs + args.extra_inputs]
+    rows = filter_rows(build_units(input_paths), args.exclude_host_regex)
     ids = [r["id"] for r in rows]
     if len(ids) != len(set(ids)):
         raise SystemExit("duplicate source unit id after normalization")
