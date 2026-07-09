@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local Slurm/runtime artifacts.
+ksova-v1b1-*.out
+ksova-v1b1-*.err
+slurm-*.out
+slurm-*.err
+benchmark/slurm_logs/
+ksova_next/outputs/
