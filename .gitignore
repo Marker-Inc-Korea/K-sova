@@ -3,8 +3,8 @@ __pycache__/
 .pytest_cache/
 
 # Local Slurm/runtime artifacts.
-ksova-v1b1-*.out
-ksova-v1b1-*.err
+ksova-*.out
+ksova-*.err
 slurm-*.out
 slurm-*.err
 benchmark/slurm_logs/
