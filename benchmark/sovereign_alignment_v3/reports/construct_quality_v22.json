@@ -1,0 +1,30 @@
+{
+  "duplicate_reference_answers": [],
+  "errors": 0,
+  "grammar_findings": [],
+  "grammar_surface_counts": {},
+  "internal_metadata_leaks": [],
+  "items": 480,
+  "korean_canonical_items": 120,
+  "status": "pass",
+  "task_required_claim_diversity": {
+    "full_collapses": [],
+    "low_diversity": []
+  },
+  "template_concentration": {
+    "repeated_reference_sentences": [],
+    "repeated_task_focuses": [],
+    "sentence_count_threshold": 12,
+    "sentence_warning_rate": 0.1,
+    "standardized_task_focuses": [
+      {
+        "count": 14,
+        "task_focus": "외국 프레임 교정",
+        "task_ids": [
+          "F"
+        ]
+      }
+    ]
+  },
+  "warnings": 0
+}

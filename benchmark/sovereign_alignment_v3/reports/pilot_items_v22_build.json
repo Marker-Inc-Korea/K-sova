@@ -1,0 +1,10 @@
+{
+  "blueprints": "config/case_blueprints_v22.json",
+  "built_items": 480,
+  "case_blueprints": 24,
+  "expected_items": 480,
+  "final_cases": 24,
+  "output": "data/pilot_items_v22.jsonl",
+  "rejected_case_details": [],
+  "rejected_cases": 0
+}
