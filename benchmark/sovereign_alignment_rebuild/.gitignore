@@ -1,0 +1,10 @@
+# Invalid generated data and runtime artifacts from this experiment.
+data/
+logs/
+reports/
+review/
+runs/
+
+__pycache__/
+*.py[cod]
+.pytest_cache/
