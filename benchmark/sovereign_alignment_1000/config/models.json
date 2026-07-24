@@ -1,0 +1,124 @@
+{
+  "schema_version": "1.0",
+  "as_of": "2026-07-23",
+  "models": {
+    "gemma": {
+      "local_id": "gemma-4-31B-it",
+      "path": "/data1/mk02/모델/gemma-4-31B-it",
+      "model_type": "gemma4",
+      "roles": ["item_author", "repair_author", "evaluation_target"]
+    },
+    "qwen": {
+      "local_id": "Qwen3.6-35B-A3B-FP8",
+      "path": "/data1/mk02/hf_bench/local/Qwen--Qwen3.6-35B-A3B-FP8",
+      "model_type": "qwen3_5_moe",
+      "roles": ["construct_reviewer", "quality_auditor", "evaluation_target", "evaluation_judge"]
+    },
+    "exaone": {
+      "local_id": "EXAONE-4.5-33B-FP8",
+      "path": "/data1/mk02/hf_bench/local/LGAI-EXAONE--EXAONE-4.5-33B-FP8-runtime",
+      "model_type": "exaone4_5",
+      "roles": ["korean_reviewer", "quality_audit_confirmation", "evaluation_target", "evaluation_judge"]
+    },
+    "swallow": {
+      "local_id": "Qwen3-Swallow-30B-A3B-RL-v0.2-AWQ-INT4",
+      "path": "/data1/mk02/hf_bench/local/tokyotech-llm--Qwen3-Swallow-30B-A3B-RL-v0.2-AWQ-INT4",
+      "model_type": "qwen3_moe",
+      "roles": ["review_tiebreak", "evaluation_target"]
+    },
+    "oss": {
+      "local_id": "gpt-oss-120b",
+      "path": "/data1/mk02/모델/gpt-oss-120b",
+      "model_type": "gpt_oss",
+      "roles": ["evaluation_judge_candidate"]
+    }
+  },
+  "stages": {
+    "item_authoring": {
+      "model": "gemma",
+      "thinking": false,
+      "max_tokens": 6144,
+      "temperature": 0.2,
+      "top_p": 0.95
+    },
+    "primary_review": {
+      "models": ["qwen", "exaone"],
+      "thinking": false,
+      "max_tokens": 1024,
+      "temperature": 0.0,
+      "top_p": 1.0
+    },
+    "review_tiebreak": {
+      "model": "swallow",
+      "thinking": true,
+      "max_tokens": 8192,
+      "temperature": 0.0,
+      "top_p": 1.0
+    },
+    "quality_audit": {
+      "model": "qwen",
+      "thinking": false,
+      "max_tokens": 1024,
+      "temperature": 0.0,
+      "top_p": 1.0
+    },
+    "evaluation": {
+      "models": ["gemma", "qwen", "exaone", "swallow"],
+      "languages": ["ko", "en", "ja", "zh-Hans"],
+      "thinking_off_max_tokens": 2048,
+      "thinking_on_max_tokens": 8192,
+      "model_conditions": {
+        "gemma": ["thinking_off", "thinking_on"],
+        "qwen": ["thinking_off", "thinking_on"],
+        "exaone": ["thinking_off", "thinking_on"],
+        "swallow": ["native_reasoning"]
+      },
+      "model_generation_overrides": {
+        "swallow": {
+          "max_tokens": 8192,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "top_k": 20,
+          "min_p": 0.0
+        }
+      },
+      "temperature": 0.0,
+      "top_p": 1.0
+    },
+    "evaluation_judging": {
+      "models": ["qwen", "exaone"],
+      "thinking": false,
+      "max_tokens": 1024,
+      "temperature": 0.0,
+      "top_p": 1.0
+    },
+    "evaluation_judging_oss_rescore": {
+      "model": "oss",
+      "rubric_version": "v2",
+      "reasoning_effort": "high",
+      "max_tokens": 4096,
+      "retry_max_tokens": 8192,
+      "retry_response_format": "strict_json_schema",
+      "pathological_repetition_fallback": {
+        "reasoning_effort": "low",
+        "max_items": 1,
+        "compact_repeated_punctuation_only": true
+      },
+      "temperature": 0.0,
+      "top_p": 1.0,
+      "judge_validation_mode": "single"
+    }
+  },
+  "runtime": {
+    "scheduler": "slurm",
+    "partition": "batch",
+    "gres": "gpu:rtx6000:1",
+    "cpus_per_task": 8,
+    "memory": "80G",
+    "max_model_len": 16384,
+    "evaluation_judge_max_model_len": 32768,
+    "evaluation_judge_max_num_seqs": 12,
+    "seed": 20260723,
+    "gpu_work_outside_slurm_allowed": false
+  }
+}

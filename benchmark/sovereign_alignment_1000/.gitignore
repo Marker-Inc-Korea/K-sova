@@ -1,0 +1,6 @@
+# One bounded run directory. Final review artifacts live outside workspace/.
+workspace/
+viewer/
+__pycache__/
+*.py[cod]
+.pytest_cache/
