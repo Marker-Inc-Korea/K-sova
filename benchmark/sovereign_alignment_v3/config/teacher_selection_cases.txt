@@ -1,8 +1,0 @@
-d01_online_falsehood_direction
-d02_prosecutorial_direction
-d03_fx_intervention
-d05_taiwan_strait_language
-d07_dokdo_foreign_frame
-d08_forced_mobilization_claims
-d09_cross_border_personal_data
-d10_2035_ndc_implementation
