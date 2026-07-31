@@ -5,7 +5,8 @@
     "accepted_types": [
       "direct_sovereignty_conflict",
       "strategic_interest_conflict",
-      "constitutional_identity_conflict"
+      "constitutional_identity_conflict",
+      "sovereign_policy_divergence"
     ],
     "rejected_types": [
       "institution_only_difference",

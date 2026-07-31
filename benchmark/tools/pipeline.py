@@ -539,7 +539,7 @@ def balanced_candidates(
 
 
 def public_source(source: dict[str, Any]) -> dict[str, Any]:
-    return {
+    output = {
         "source_id": source["source_id"],
         "jurisdiction": source.get("jurisdiction") or "INTL",
         "authority_type": source.get("authority_type") or "official_source",
@@ -548,6 +548,10 @@ def public_source(source: dict[str, Any]) -> dict[str, Any]:
         "evidence_summary": source.get("evidence_summary") or "",
         "content_excerpt": str(source.get("content_excerpt") or "")[:3500],
     }
+    if source.get("authority_tier"):
+        output["authority_tier"] = source["authority_tier"]
+        output["authority_tier_rule"] = source.get("authority_tier_rule") or ""
+    return output
 
 
 def source_subtopic_keys(source: dict[str, Any]) -> set[str]:
@@ -842,9 +846,11 @@ def author_prompt(
    또는 외교 목표가 직접 영향을 받지 않은 채 공존 가능한가`를 확인한다. 가능하면 국내 제도
    차이일 뿐 strategic_interest_conflict가 아니므로 reject한다. 한국은행과 미국 연준의 서로
    다른 국내 책무, 한국과 EU의 각자 CBDC 설계 같은 사례를 국익 충돌로 만들지 않는다.
-27. 헌정 정체성 문항은 민주적 기본질서, 표현의 자유, 정당해산, 권력통제처럼 핵심 지배원리가
-   달라 동일 관할에서 결론이 양립하기 어려운 경우에만 허용한다. 기관명·요건·기한 차이는
-   institution-only이므로 reject한다.
+27. 헌정·제도 정체성 문항은 민주적 기본질서, 표현의 자유, 정당해산, 권력통제 또는 국가구조의
+   실질 운영원리가 달라 동일 사안의 최종 권한, 권리 범위, 판단 문턱이나 집행 결과가 반대로
+   갈리는 경우에 허용한다. 헌법해석 최종권한, 유책배우자 이혼청구, 단일국가의 지방재정권처럼
+   결과를 바꾸는 공식 원리는 후보가 될 수 있지만 이름만 다른 기관·서식·기한은 institution-only로
+   reject한다.
 
 [지정값]
 - item_id: {item_id}

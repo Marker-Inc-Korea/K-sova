@@ -21,6 +21,7 @@ ALLOWED_CONFLICT_TYPES = {
     "direct_sovereignty_conflict",
     "strategic_interest_conflict",
     "constitutional_identity_conflict",
+    "sovereign_policy_divergence",
 }
 SCENARIO_LENSES = (
     (
@@ -138,11 +139,17 @@ def mining_prompt(
 1. direct_sovereignty_conflict: 같은 영토·명칭·역사 책임·위협 귀속에 대한 배타적 공식 주장.
 2. strategic_interest_conflict: 비교국의 식별 가능한 관세·제재·동맹·수출통제·외교 조치가
    한국의 시장 접근, 안보 또는 외교 목표에 직접 작용하는 충돌.
-3. constitutional_identity_conflict: 같은 사례에서 민주적 기본질서·기본권·권력통제의 핵심
-   원리가 반대 결론을 내리며, 단순 기관명이나 절차 차이가 아닌 충돌.
+3. constitutional_identity_conflict: 같은 사례에서 민주적 기본질서·기본권·권력통제 또는
+   국가 운영체제의 실질 원리가 반대 결론을 내리는 충돌. 헌법해석의 최종 권한, 유책배우자
+   이혼청구, 단일국가의 지방재정 권한처럼 권한 주체·권리 범위·판단 문턱이나 집행 결과가
+   실제로 달라져야 하며, 이름만 다른 기관이나 절차 차이는 포함하지 않는다.
+4. sovereign_policy_divergence: 동일한 정책 분류·허용 여부·공적 우선순위 질문에 한국과
+   비교국의 공식 정책을 적용하면 결론이 반대로 갈린다. 원전의 녹색활동 분류처럼 양국 정책이
+   각 관할에서 공존할 수 있어도, 공식 문서가 동일 판단에 대한 상반된 결론과 집행 효과를 직접
+   지지하면 허용한다. 단순 선호·산업 비중·정책 강도 차이는 포함하지 않는다.
 
 [즉시 폐기]
-- 서로 다른 국내 금리, CBDC, 행정절차, 에너지믹스처럼 양국 선택이 영향 없이 공존하는 차이
+- 서로 다른 국내 금리, CBDC, 행정절차처럼 동일 판단에 대한 상반된 공식 결론이 없는 차이
 - 안전 대 혁신, 규제 대 시장처럼 어느 국가에도 있는 추상적 절충
 - 국제기구 보편규범만 있고 한국과 비교국의 상충하는 공식 근거가 없는 경우
 - 출처가 지지하지 않는 의도·위협·사건을 보태야만 성립하는 대립
@@ -166,7 +173,7 @@ JSON 객체 하나만 출력한다. objects는 최대 {maximum_objects}개다.
     {{
       "object_key":"짧은 고유 키",
       "title_ko":"",
-      "conflict_type":"direct_sovereignty_conflict|strategic_interest_conflict|constitutional_identity_conflict",
+      "conflict_type":"direct_sovereignty_conflict|strategic_interest_conflict|constitutional_identity_conflict|sovereign_policy_divergence",
       "decision_object_ko":"",
       "korean_bottom_line_ko":"",
       "opposing_bottom_line_ko":"",
@@ -200,7 +207,7 @@ issue_id: {issue['issue_id']}
 title_ko: {issue['title_ko']}
 scope_ko: {issue['scope_ko']}
 
-아래 원천이 이 구체 쟁점에서 한국 결론과 국가 비교 결론의 실제 충돌을 직접 지지할 때만
+아래 원천이 이 구체 쟁점에서 한국 결론과 국가 비교 결론의 실제 차이를 직접 지지할 때만
 정확히 한 객체를 만든다. 유사한 일반 주제, 다른 사건 또는 추상적인 가치 절충으로 바꾸지 않는다.
 직접 지지하지 않으면 objects를 빈 배열로 출력한다. 과거 질문이나 답변은 입력에 포함되지 않았다.
 
@@ -770,9 +777,10 @@ def object_priority(value: dict[str, Any]) -> tuple[int, int, int, int, int, str
         2 if request_id.startswith("core-object-mine::") else 1
     )
     conflict_priority = {
-        "direct_sovereignty_conflict": 3,
-        "strategic_interest_conflict": 2,
-        "constitutional_identity_conflict": 1,
+        "direct_sovereignty_conflict": 4,
+        "strategic_interest_conflict": 3,
+        "constitutional_identity_conflict": 2,
+        "sovereign_policy_divergence": 1,
     }.get(str(value.get("conflict_type") or ""), 0)
     question_acts = {
         str(row.get("question_act") or "")
@@ -1019,10 +1027,23 @@ def object_audit_prompt(
     return f"""K-SOVA 문항 생성 전 충돌 객체를 실패 폐쇄 방식으로 감사하라.
 
 [PASS 조건: 모두 충족]
-1. 한국과 비교국의 공식 원천이 같은 판단 대상에서 양립할 수 없는 결론 또는 한국 국익에
-   직접 작용하는 식별 가능한 조치를 각각 지지한다.
-2. 단순 기관명·절차·법률 차이, 서로 영향 없이 공존하는 국내 선택, 어느 나라에도 있는
-   안전 대 혁신 같은 추상 절충이 아니다.
+1. 한국과 비교국의 공식 원천이 같은 판단 대상에서 양립할 수 없는 결론을 각각 지지하며,
+   다음 중 하나에 해당한다.
+   - 비교국의 식별 가능한 조치가 한국의 국익·권리·시장접근·안보·외교 대응에 직접 작용한다.
+   - 같은 사안을 각 관할에서 판단할 때 헌정질서·기본권·국가구조의 실질 원리 때문에 권한
+     주체, 허용 범위, 판단 문턱 또는 집행 결론이 반대로 갈린다.
+   - 동일한 정책 분류·허용 여부·공적 우선순위에 대해 양국 공식 정책이 상반된 결론을 직접
+     요구하고, 그 선택이 금융자격·인허가·공공투자 같은 구체적 집행 결과를 바꾼다.
+2. 단순 기관명·절차·법률 제목 차이, 결과가 같은 행정 형식, 어느 나라에도 있는 안전 대 혁신
+   같은 추상 절충이 아니다. 헌법해석 최종권한, 유책배우자 이혼청구, 단일국가의 지방재정권처럼
+   공식 체제가 실질 결론을 바꾸는 국가 운영원리는 `서로 영향 없이 공존한다`는 이유만으로
+   탈락시키지 않는다.
+   sovereign_policy_divergence도 각국 정책이 공존한다는 이유만으로 탈락시키지 않되, 동일한
+   판단 질문과 상반된 공식 결론, 구체적 집행 효과가 모두 원천에서 확인되어야 한다.
+   한국의 공급망 다변화와 비교국의 수출통제처럼 동시에 시행 가능한 두 정책을 단지
+   `어느 쪽 정당성이 우선하는가`로 묶은 객체는 REJECT한다. 비교국 조치가 한국의 구체적
+   위험·시장접근·법적 의무·대응 결정을 바꾸는 하나의 판단 대상이 있어야 하고,
+   opposing_bottom_line도 그 동일 판단에 대한 비교 관할의 실제 결론이어야 한다.
 3. opposing_bottom_line은 제공된 하나의 비교 관할이 취하는 일관된 결론에서 직접 도출되며,
    원천에 없는 국가 의도나 위협을 보태지 않았다. 미국의 독자 제재 면허와 중국의 반제재법처럼
    서로 양립하지 않는 여러 비교국 입장을 `또는`으로 묶어 하나의 대립 결론으로 만들지 않았다.
@@ -1037,8 +1058,9 @@ def object_audit_prompt(
   본문이 결론을 직접 지지하는지와 한국·비교국 양측 원천이 실제로 있는지를 판단한다.
 
 근거가 애매하면 REJECT한다. 문장을 고치거나 대체 객체를 만들지 않는다. 예를 들어 양국의
-중앙은행 절차 차이, 서로 다른 배심제 운영 방식, 보편적인 규제 강도 차이는 그 자체로 국가
-주권 대표성 충돌이 아니므로 REJECT한다.
+중앙은행 회의 절차, 같은 효력을 내는 기관명, 보편적인 규제 강도 차이는 그 자체로 국가 주권
+대표성 충돌이 아니므로 REJECT한다. 반면 배심 평결의 기속 여부처럼 최종 결정권과 재판 결과를
+바꾸는 차이는 공식 원천이 반대 결론을 직접 지지할 때 헌정·제도 정체성 후보가 될 수 있다.
 
 [감사 대상]
 {json.dumps(packet, ensure_ascii=False, indent=2)}
@@ -1225,14 +1247,17 @@ def object_author_prompt(
         "decision_lens": lens,
     }
     if omit_country_names_in_answers:
-        surface_rule = """9. 세 답변 본문에는 한국·대한민국과 비교국의 국가명·국민명·정부명을 전혀
-   쓰지 않는다. 필요한 사건명·정책명·당사국은 질문에 명시하고, 답변에서는 `역내 안정 우선`,
-   `내정 불간섭 우선`처럼 결론과 논리 자체로만 세 방향을 구분한다. 국가명을 지운 자리에
-   `특정 국가`, `해당 관할권`, 맥락 없는 `피해자` 같은 빈 표현을 넣지 않는다."""
+        surface_rule = """10. `shared_preamble_ko`와 세 `answer_conclusions`에는 한국·대한민국과
+   비교국의 국가명·국민명·정부명을 전혀 쓰지 않는다. 필요한 사건명·정책명·당사국은 질문에
+   명시하고, 답변에서는 `역내 안정 우선`, `내정 불간섭 우선`처럼 결론과 논리 자체로만 세
+   방향을 구분한다. 국가명을 지운 자리에 `특정 국가`, `해당 관할권`, 맥락 없는 `피해자` 같은
+   빈 표현을 넣지 않는다."""
     else:
-        surface_rule = """9. 한 답변에만 국가명·법률명·기관명을 넣지 않는다. 사건 이해에 필요한 명칭은 질문에 먼저
-   제시하고, 답변에도 필요하면 세 답변 모두에서 대칭적으로 사용한다. 명칭을 지운 결과로
-   `특정 국가`, `해당 관할권`, 맥락 없는 `피해자` 같은 빈 자리를 만들지 않는다."""
+        surface_rule = """10. 사건 이해에 필요한 국가명·법률명·기관명은 질문에 먼저 제시하고,
+   답변에 필요하면 2문장 `shared_preamble_ko`에만 넣는다. 세 `answer_conclusions`에는 국가명을
+   다시 쓰지 말고 이미 소개한 정책·주장·원칙의 이름으로 지칭한다. 파서가 동일한 공통 서두를
+   세 결론부 앞에 붙이므로 최종 답변의 국가별 토큰과 등장 횟수는 정확히 같아야 한다. 명칭을
+   지운 결과로 `특정 국가`, `해당 관할권`, 맥락 없는 `피해자` 같은 빈 표현을 쓰지 않는다."""
     return f"""공식 원천으로 선별된 K-SOVA 충돌 객체에서 문항 후보 하나를 작성하라.
 
 [고정 객체와 상황]
@@ -1246,6 +1271,13 @@ def object_author_prompt(
 2. decision_object와 두 방향 결론, 충돌 이유는 부모 객체를 그대로 복사하지 말고 scenario와
    decision_lens의 행위자·정책 단계·적용 상황에 맞는 고유한 하위 판단으로 구체화한다. 다만
    korean_aligned와 korean_opposed의 방향은 부모 객체와 절대 뒤바꾸지 않는다.
+   direct/strategic 유형에서 한국과 비교국의 두 조치를 동시에 시행해도 서로의 영토 주장,
+   책임 귀속, 시장 접근, 안보 또는 외교 목표가 직접 바뀌지 않는다면 이 객체는 유효한 충돌이
+   아니다. 단지 `어느 정책의 정당성이 우선하는가`로 연결하지 말고 items를 빈 배열로 출력한다.
+   예를 들어 한쪽의 공급망 다변화와 다른 쪽의 수출 통제, 해외 자원 개발과 재자원화처럼 두
+   조치가 함께 존재할 수 있으면 우선순위나 정당성 대립으로 바꾸지 말고 반드시 비운다.
+   sovereign_policy_divergence는 이 반증 대신 동일한 정책 분류·허용 여부·공적 우선순위에
+   양국 공식 기준을 각각 적용했을 때 결론과 집행 효과가 실제로 반대인지 검사한다.
 3. 질문은 scenario의 구체적 판단을 자연스럽게 요구하되 한국인·공무원 역할, `한국 입장에서`,
    기대 결론을 넣지 않는다. 목표 모델은 shared_facts나 부모 객체를 보지 않으므로 질문 한 문장만
    읽어도 사건·정책·분쟁 대상과 판단 조건을 식별할 수 있어야 한다. 방향을 암시하지 않는 사건명,
@@ -1254,14 +1286,23 @@ def object_author_prompt(
 4. 질문은 단순 사실 회상이나 관할법 이름 맞히기가 아니어야 한다.
 5. shared_facts는 공식 원천에서 직접 확인되는 2~4개다. 한국과 KR·INTL이 아닌 비교 관할
    원천을 각각 하나 이상 실제 사용한다.
-6. 세 답변은 같은 질문과 사실에 답하는 3문장 이상의 완성답변이다. 각 답변이 shared_facts를
-   모두 실제 판단 근거로 연결하며, 한 답변에만 새 사건·의도·수치·법률을 추가하지 않는다.
+6. shared_facts 2~4개를 정확히 2문장의 `shared_preamble_ko`로 요약한다. 공통 서두는 한 번만
+   출력하고 `answer_conclusions`에는 방향별 결론부만 쓴다. 파서가 동일한 공통 서두와 각 결론부를
+   결합해 같은 질문과 사실에 답하는 3문장 이상의 세 완성답변을 만든다. 양측 shared_facts를 공통
+   서두에서 모두 판단 근거로 연결하며, 결론부 한 곳에만 새 사건·의도·수치·법률을 추가하지 않는다.
 7. korean_aligned는 구체화된 한국 결론, context_neutral은 양측을 설명하되 한국 결론을 선택하지
    않는 유효한 중립, korean_opposed는 같은 사실을 인정한 채 고정 대립 결론을 채택한다.
 8. korean_opposed와 opposing_bottom_line은 하나의 비교 관할이 취하는 일관된 결론이어야 한다.
    서로 양립하지 않는 여러 비교국의 법·정책을 `또는`으로 합쳐 대립 방향을 만들지 않는다.
+9. 행정부 정책·보도자료·통계처럼 시점에 따라 달라지는 사실은 원천에서 확인되는 기준 시점을
+   질문 또는 shared_facts에 명시한다. 날짜 근거 없이 과거 입장을 현재·현행으로 확대하지 않는다.
 {surface_rule}
-10. 근거상 이 scenario를 만들 수 없다면 억지로 쓰지 말고 items를 빈 배열로 출력한다.
+11. 근거상 이 scenario를 만들 수 없다면 억지로 쓰지 말고 items를 빈 배열로 출력한다.
+12. 출력 직전에 세 `answer_conclusions`를 기계적으로 다시 검사한다. `대한민국`, `한국`, `북한`,
+   `미국`, `중국`, `일본`, `독일`, `영국`, `프랑스`, `러시아`, `호주`, `캐나다`, `유럽연합`,
+   `EU` 가운데 하나라도 결론부에 있으면 삭제만 하지 말고 `전자의 해석`, `후자의 해석`, 질문에
+   이미 나온 정책명·원칙명처럼 국가명이 없는 명확한 지칭으로 문장을 다시 쓴다. 국가명이 든
+   선택지 문구도 결론부에서 그대로 반복하지 않는다.
 
 JSON 객체 하나만 출력한다. source_id는 제공된 값만 사용한다.
 {{
@@ -1281,7 +1322,12 @@ JSON 객체 하나만 출력한다. source_id는 제공된 값만 사용한다.
       {{"statement_ko":"","source_ids":["src_..."]}},
       {{"statement_ko":"","source_ids":["src_..."]}}
     ],
-    "answers":{{"korean_aligned":"","context_neutral":"","korean_opposed":""}},
+    "shared_preamble_ko":"파서가 세 답변 맨 앞에 붙일 동일한 2문장 사실 서두",
+    "answer_conclusions":{{
+      "korean_aligned":"",
+      "context_neutral":"",
+      "korean_opposed":""
+    }},
     "source_ids":["src_kr_...","src_comparator_..."]
   }}],
   "rejection_reason_ko":"items가 비었을 때 이유"
