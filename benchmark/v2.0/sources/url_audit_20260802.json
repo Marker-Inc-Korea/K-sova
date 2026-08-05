@@ -1,0 +1,1615 @@
+{
+  "schema_version": "ksova-v2-source-url-audit-1.0",
+  "note": "접근 실패는 링크 폐기 판정이 아니며 브라우저·인증·로봇 차단을 별도 확인해야 한다.",
+  "total": 267,
+  "counts": {
+    "blocked_or_auth": 2,
+    "http_error": 17,
+    "network_error": 3,
+    "reachable": 245
+  },
+  "results": [
+    {
+      "source_id": "src_0252764f24d2a9",
+      "url": "https://www.ohchr.org/sites/default/files/Documents/HRBodies/CAT/CAT-C-GC-4_EN.pdf",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_032dc39c5eb687",
+      "url": "https://overseas.mofa.go.kr/rs-ko/brd/m_7910/view.do?seq=643092#international-communication",
+      "result": "http_error",
+      "http_status": 500
+    },
+    {
+      "source_id": "src_033ef62c5b9f5d",
+      "url": "https://www.international.gc.ca/world-monde/issues_development-enjeux_developpement/peace_security-paix_securite/conventional_weapons-armes_conventionnelles.aspx?lang=eng",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_039db9ccc3fa6a",
+      "url": "https://www.gesetze-im-internet.de/kdvg_2003/BJNR159310003.html",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_04789a990483b7",
+      "url": "https://www.korea.kr/news/policyNewsView.do?newsId=156141718",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_07560ddda46cf8",
+      "url": "https://contents.nahf.or.kr/eddokViewer/contens.do?viewType=Middle&levelId=eddok.d_0003_0050_0040",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_0806e4d2de4b1b",
+      "url": "https://en.moj.gov.cn/pdf/RegulationsonNetworkDataSecurityManagement.pdf",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_0861fb56cc73fd",
+      "url": "https://www.mohw.go.kr/board.es?act=view&bid=0027&list_no=1483931&mid=a10503010100&nPage=31&tag=",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_0b5b3cbf3ce962",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=61603",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_0d0c73650a923a",
+      "url": "https://contents.nahf.or.kr/item/level.do?levelId=iscol.d_0006",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_0d2ab804e22791",
+      "url": "https://www.govinfo.gov/content/pkg/USCODE-2023-title50/pdf/USCODE-2023-title50-chap34.pdf",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_0dfaa6be03e2bf",
+      "url": "https://contents.nahf.or.kr/item/level.do?levelId=iscd.d_0003_0030_0060",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_0e072f7dcc8584",
+      "url": "https://opendata.mofa.go.kr/mofapub/resource/Publication/14126.page",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_0e68c80ac06466",
+      "url": "https://www.mod.go.jp/asdf/en/roles/role02/",
+      "result": "blocked_or_auth",
+      "http_status": 403
+    },
+    {
+      "source_id": "src_0eb109b407bcfd",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=268619",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_0eb3880140a3f9",
+      "url": "https://www.miit.gov.cn/zcfg/xxtxl/art/2022/art_f4ec73fc1f8f4615ba4cb44e998426b3.html",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_0f149c78bf1e5f",
+      "url": "https://www.mofa.go.kr/eng/brd/m_5676/view.do?seq=316765",
+      "result": "http_error",
+      "http_status": 500
+    },
+    {
+      "source_id": "src_11e6f4c1d1d8a3",
+      "url": "https://www.law.go.kr/LSW/detcInfoP.do?detcSeq=41693",
+      "result": "network_error",
+      "error": "TimeoutError: The read operation timed out"
+    },
+    {
+      "source_id": "src_130c7e4916d79b",
+      "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/171914/view",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_1318bbbb2c725c",
+      "url": "https://www.overseaschf.or.kr/okchf/index.do",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_154224f60bc403",
+      "url": "https://www.msit.go.kr/user/ais/requestAi.do",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_1597dd544309c7",
+      "url": "https://opendata.mofa.go.kr/mofapub/resource/Publication/14271.page",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_193ec99add0bf2",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=287575",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_19d0782b97f630",
+      "url": "https://laws-lois.justice.gc.ca/eng/Const/section-92.html",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_1a81423186d167",
+      "url": "https://cdn.osce.org/sites/default/files/f/documents/8/1/538473.pdf",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_1b654612a9f8b3",
+      "url": "https://www.ohchr.org/sites/default/files/ReportConscientiousObjectiontoMilitaryService.pdf",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_1f8cd0f0277d77",
+      "url": "https://www.bmeia.gv.at/en/ministerium/presse/aktuelles/alle/musterjahr/01-1-1/foreign-minister-meinl-reisinger-on-the-fifth-anniversary-of-the-treaty-on-the-prohibition-of-nuclear-weapons-tpnw-nuclear-weapons-do-not-protect-us-they-endanger-our-very-existence",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_200d370a6f2917",
+      "url": "http://www.npc.gov.cn/englishnpc/c2759/c23934/202112/t20211209_384804.html",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_2032bd39ca0c4c",
+      "url": "https://www.dapa.go.kr/upload/pcm/%EB%B0%A9%EC%9C%84%EC%82%AC%EC%97%85_%EB%AF%BC%EC%9B%90%ED%8E%B8%EB%9E%8C_%282024%EB%85%84_8%EC%9B%94_%EA%B0%9C%EC%A0%95%ED%8C%90%29.pdf",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_22a9a7e4736cc8",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=283385",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_22ed5f7d877e80",
+      "url": "https://www.korea.kr/briefing/actuallyView.do?newsId=148933693",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_244879ad38dc3d",
+      "url": "https://www.mofa.go.jp/files/100520678.pdf",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_24570688ec84e5",
+      "url": "https://contents.nahf.or.kr/edkcViewer/item.do?pg=27&view=contents",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_24ca653dee3a79",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=271241",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_24d514e788e0d2",
+      "url": "https://contents.nahf.or.kr/iscdViewer/item.do?levelId=iscd.d_0003_0030_0020&page=017",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_251c487ba1795e",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=286127",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_25ea6531d08ade",
+      "url": "https://www.korea.kr/news/policyNewsView.do?newsId=148887383",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_270944fe5d731d",
+      "url": "https://www.mofa.go.kr/eng/brd/m_5676/view.do?seq=322234",
+      "result": "http_error",
+      "http_status": 500
+    },
+    {
+      "source_id": "src_27d39d02dc16b2",
+      "url": "https://www.cisa.gov/sites/default/files/2024-07/aa24-207a-dprk-cyber-group-conducts-global-espionage-campaign.pdf",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_28d379c2ee7951",
+      "url": "https://seoul.ohchr.org/en/node/179",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_29aacd6bc73023",
+      "url": "https://stjececmsdusgva001.blob.core.usgovcloudapi.net/public/documents/NWP_1-14M.pdf",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_2b81a7e5658443",
+      "url": "https://www.bok.or.kr/portal/bbs/B0000299/view.do?menuNo=200994&nttId=10097242",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_2d0269467444c9",
+      "url": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156598788",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_2d75edfbee67a2",
+      "url": "https://m.pipc.go.kr/np/default/page.do?mCode=D060040000",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_2d8487713c97ea",
+      "url": "https://www1.kaiho.mlit.go.jp/nihonkai/index_eng.html",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_313daedfebd733",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=286079",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_3258e5fdfb1be8",
+      "url": "https://www.scourt.go.kr/supreme/news/NewsViewAction2.work?gubun=4&seqnum=10921",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_37a59e0b9761fe",
+      "url": "https://contents.nahf.or.kr/eddokViewer/contens.do?viewType=Elementary&levelId=eddok.d_0002_0050_0010",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_39015bbeb78c59",
+      "url": "https://www.mofa.go.jp/files/000472344.pdf",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_3a00559f49f583",
+      "url": "https://www.nsf.gov/research-security",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_3a2841435997d5",
+      "url": "https://eur-lex.europa.eu/eli/dir/2015/637/oj",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_3a305f6ef0e365",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=270351",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_3a5262bc5d17b8",
+      "url": "https://contents.nahf.or.kr/eddokViewer/contens.do?viewType=Middle&levelId=eddok.d_0003_0050_0020",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_3bf4c603dc3453",
+      "url": "https://www.bmk.gv.at/dam/jcr%3A39a8fc2a-8c3f-481c-9a1c-44c87cc888ce/MSEG_Comments_Draft_Delegated_ActTaxonomy.pdf",
+      "result": "http_error",
+      "http_status": 404
+    },
+    {
+      "source_id": "src_3c9e50d9177df1",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=280361",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_3dc7c6cfa0368a",
+      "url": "https://documents.un.org/api/symbol/access?l=en&s=A%2FRES%2F79%2F38&t=pdf",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_3f4eed3e0f770c",
+      "url": "https://contents.nahf.or.kr/item/level.do?levelId=iscd.d_0003_0030_0050",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_3f5d1d653262f5",
+      "url": "https://www.mofa.go.kr/eng/brd/m_5676/view.do?seq=322083",
+      "result": "http_error",
+      "http_status": 500
+    },
+    {
+      "source_id": "src_3ffda38e1468be",
+      "url": "https://www.jacar.archives.go.jp/aj/meta/MetSearch.cgi?DB_ID=G0000101EXTERNAL&DEF_XSL=default&GRP_ID=G0000101&IS_EXTSCH=&IS_KEY_S1=%E6%9C%9D%E9%AE%AE%E7%B7%8F%E7%9D%A3%E5%BA%9C+%E5%95%86%E5%B7%A5%E5%A5%A8%E5%8A%B1%E9%A4%A8&IS_KIND=SimpleSummary&IS_NUMBER=20&IS_SCH=META&IS_SORT_FLD=&IS_SORT_KND=ASC&IS_START=1&IS_STYLE=default&IS_TAG_S1=InD&ON_LYD=on&SUM_KIND=MetaSummary&SUM_NUMBER=20",
+      "result": "http_error",
+      "http_status": 404
+    },
+    {
+      "source_id": "src_41550ea3b26fe6",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=268535",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_41b04db2a1688a",
+      "url": "https://ofac.treasury.gov/sanctions-programs-and-country-information/north-korea-sanctions",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_42c4918115b91e",
+      "url": "https://www.me.go.kr/home/web/board/read.do?boardId=1841840&boardMasterId=939&menuId=10598",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_44f952d23f153a",
+      "url": "https://www.mof.go.kr/doc/ko/selectDoc.do?bbsSeq=10&docSeq=52263&menuSeq=971",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_48ea4a758e0848",
+      "url": "https://www.uscourts.gov/court-programs/jury-service/types-juries",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_4b56d619c579bb",
+      "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/169011/view",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_4e4578f5a9baa3",
+      "url": "https://english.www.gov.cn/policies/latestreleases/202604/07/content_WS69d5038cc6d00ca5f9a0a460.html",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_4e80e8ae6a6faa",
+      "url": "https://www.fmprc.gov.cn/eng./xw/fyrbt/lxjzh/202405/t20240530_11347686.html",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_51a881ccbfe163",
+      "url": "https://www.mofa.go.kr/www/wpge/m_3838/contents.do",
+      "result": "http_error",
+      "http_status": 307
+    },
+    {
+      "source_id": "src_52ed19aa4705f6",
+      "url": "https://www.bunka.go.jp/english/policy/cultural_properties/international/",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_52f51dc77658ce",
+      "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/169994/view",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_53c6f4aad2095a",
+      "url": "https://dl.ndl.go.jp/view/prepareDownload?itemId=info%3Andljp%2Fpid%2F11017939",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_556db2d48f9e4f",
+      "url": "http://exportcontrol.mofcom.gov.cn/article/zcfg/gnzcfg/flfg/202111/231.html",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_55c052584c642b",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=244609",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_55da2a0a7983e9",
+      "url": "https://laws.e-gov.go.jp/api/1/lawdata/504CO0000000394",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_55ec65a4a69973",
+      "url": "https://unikorea.go.kr/web/nkhr/contents/residence_0001",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_5604d8abc0a1bf",
+      "url": "https://www.acquisition.gov/dfars/225.871-2-definitions.",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_5714bc185d17c8",
+      "url": "https://www.mofa.go.kr/cntntsDown.do?path=www&physic=%EC%9C%A4%EC%84%9D%EC%97%B4+%EC%A0%95%EB%B6%80%EC%9D%98+%EA%B5%AD%EA%B0%80%EC%95%88%EB%B3%B4%EC%A0%84%EB%9E%B5%28%EA%B5%AD%EB%AC%B8%29.pdf&real=%EC%9C%A4%EC%84%9D%EC%97%B4+%EC%A0%95%EB%B6%80%EC%9D%98+%EA%B5%AD%EA%B0%80%EC%95%88%EB%B3%B4%EC%A0%84%EB%9E%B5%28%EA%B5%AD%EB%AC%B8%29.pdf",
+      "result": "http_error",
+      "http_status": 307
+    },
+    {
+      "source_id": "src_58ae6e3a78bcd7",
+      "url": "https://contents.history.go.kr/front/hm/print.do?treeId=020107&tabId=01&levelId=hm_122_0010",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_5b6eb903023450",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=268703",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_5faba847475709",
+      "url": "https://laws.e-gov.go.jp/api/1/lawdata/340AC0000000144",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_60b77c6b23a397",
+      "url": "https://www.easylaw.go.kr/CSP/CnpClsMainBtr.laf?ccfNo=3&cciNo=2&cnpClsNo=1&csmSeq=899&popMenu=ov",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_61d040235ee28c",
+      "url": "https://www.fmprc.gov.cn/nanhai/eng/fyrbt_1/202507/t20250712_11669922.htm",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_621d5c984afc7c",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=276497",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_626acbde778275",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=277349",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_62f1a2c9d2d3a4",
+      "url": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=214515",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_6360f773a510d6",
+      "url": "https://contents.nahf.or.kr/item/level.do?levelId=edeah.d_0006_0050_0020_0040",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_6396b9328c9f1d",
+      "url": "https://www.fmprc.gov.cn/eng/gjhdq_665435/2675_665437/2767_663538/2769_663542/202304/t20230424_11064770.html",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_63cef7d35242cb",
+      "url": "https://www.nahf.or.kr/web/portal/webzine/774/61043",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_64426dbd496b50",
+      "url": "https://www.mofa.go.kr/www/brd/m_4081/view.do?page=49&seq=293864",
+      "result": "http_error",
+      "http_status": 500
+    },
+    {
+      "source_id": "src_64a39c2895e66f",
+      "url": "https://www.law.go.kr/LSW/precInfoP.do?evtNo=2009%EB%8F%8414065",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_64bd16b4147a6e",
+      "url": "https://ccourt.go.kr/site/kor/ex/bbs/View.do?bcIdx=941765&cbIdx=1106",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_651daa2005a6b3",
+      "url": "https://eur-lex.europa.eu/eli/reg/2023/956/oj/eng",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_65262e9bceb112",
+      "url": "https://www.law.go.kr/LSW/lsInfoP.do?ancYnChk=0&chrClsCd=010202&efYd=20260102&lsiSeq=276055&urlMode=lsInfoP",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_656be97b98ac6e",
+      "url": "https://www.law.go.kr/LSW/lsInfoP.do?ancYnChk=0&lsId=001607",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_65b682645b3ce6",
+      "url": "https://www.nsf.gov/research-security/guidelines",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_665d161402e4a8",
+      "url": "https://overseas.mofa.go.kr/nz-ko/brd/m_1773/view.do?seq=842581",
+      "result": "http_error",
+      "http_status": 500
+    },
+    {
+      "source_id": "src_66ea27b963aa25",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=276311",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_69100927de18d9",
+      "url": "https://www.ncsc.go.kr/template/resources/file/nis_guide_lines_2023_1_31.pdf",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_69d0998e38c594",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=272873",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_6b174278a9bca7",
+      "url": "http://www.npc.gov.cn/c2/c30834/202106/t20210611_311958.html",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_6dae375f638ee2",
+      "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/171691/view",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_6f27bf7f57a4d5",
+      "url": "http://www.npc.gov.cn/npc/c2/c30834/202306/t20230630_430377.html",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_6f642b912e85f9",
+      "url": "https://www.zytzb.gov.cn/zytzb/2026-06/30/article_15327.shtml",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_73e0be84efe1d9",
+      "url": "https://www.law.go.kr/precInfoP.do?precSeq=204201",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_75a6b6dc06acca",
+      "url": "https://hairo.unikorea.go.kr/guide/SupportBizTakeOut.html",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_76b9b57c61a43c",
+      "url": "https://contents.nahf.or.kr/item/level.do?levelId=gt.d_0007_0030_0030_0010",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_77b05746cf9537",
+      "url": "https://documents.un.org/doc/undoc/gen/n22/736/72/pdf/n2273672.pdf",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_78a51e4ec47815",
+      "url": "https://afdc.energy.gov/laws/13388",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_7a0ec1156bf39d",
+      "url": "https://www.nopss.gov.cn/n/2013/0423/c362359-21247822.html",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_7ca265b17688a7",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=284023",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_7f8a18571bb294",
+      "url": "https://english.mofcom.gov.cn/Policies/AnnouncementsOrders/art/2025/art_0dd87cbee7b045bf93fabe6ab2faceee.html/",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_8207a86befe57f",
+      "url": "https://commission.europa.eu/document/download/8b5910fe-10ea-4645-8b14-162ff72ea049_en",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_8251b0072a03b7",
+      "url": "https://www.law.go.kr/lsInfoP.do?lsiSeq=148466",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_8494400a88e1e2",
+      "url": "https://ohjeisto.stuk.fi/YVLold/YVLD.5en_2018-02-13.pdf",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_84e796cf0c0f54",
+      "url": "https://www.mofa.go.kr/eng/brd/m_5674/view.do?seq=320862",
+      "result": "http_error",
+      "http_status": 500
+    },
+    {
+      "source_id": "src_85b76d707ab43b",
+      "url": "https://www.whitehouse.gov/presidential-actions/2026/06/further-adjusting-the-tariff-regimes-for-imports-of-aluminum-steel-and-copper-into-the-united-states/",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_87b882d1af1070",
+      "url": "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism_en",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_89093e2359ae1f",
+      "url": "https://eur-lex.europa.eu/eli/dir/2019/1937/oj#article15",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_898934839d7075",
+      "url": "https://contents.nahf.or.kr/iscdViewer/item.do?levelId=iscd.d_0003_0040_0010&page=022",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_89986fe7d7927d",
+      "url": "https://www.wto.org/english/tratop_e/scm_e/subs_e.htm",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_8a5c405922f001",
+      "url": "https://contents.nahf.or.kr/item/level.do?levelId=edeah.d_0006_0050_0020_0040",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_8a7e2fdc88d326",
+      "url": "https://www.law.go.kr/LSW/detcInfoP.do?detcSeq=125507&mode=2",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_8b497890024739",
+      "url": "https://www.mofa.go.kr/www/brd/m_25488/view.do?seq=367949",
+      "result": "http_error",
+      "http_status": 500
+    },
+    {
+      "source_id": "src_8cdd5d8d6763e4",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=286519",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_8d3b97a80667f6",
+      "url": "https://contents.history.go.kr/mobile/kc/view.do?levelId=kc_i402200",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_8e9eb39dfe8ebb",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=281865",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_8ea043d80fe5d7",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=280043",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_8f69117be4647b",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=202628",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_8fd8b5ec3305fa",
+      "url": "https://www.motie.go.kr/kor/search?kwd=%EA%B5%AD%EA%B0%80%ED%95%B5%EC%8B%AC%EA%B8%B0%EC%88%A0",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_90741ee9475607",
+      "url": "http://www.npc.gov.cn/zgrdw/npc/xinwen/2017-06/27/content_2024529.htm",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_912cdac7ac422e",
+      "url": "https://www.cac.gov.cn/2024-03/22/c_1712776612187994.htm",
+      "result": "network_error",
+      "error": "RemoteDisconnected: Remote end closed connection without response"
+    },
+    {
+      "source_id": "src_92990fe61875ff",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=286277",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_92bba6c2cb6e62",
+      "url": "https://www.fmprc.gov.cn/eng/xw/zyjh/202405/t20240530_11341171.html",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_94f8b8aa07b9c2",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=251019",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_98ad1fd8ffd2de",
+      "url": "https://overseas.mofa.go.kr/rs-ko/brd/m_7910/view.do?seq=643092",
+      "result": "http_error",
+      "http_status": 500
+    },
+    {
+      "source_id": "src_99794ab663fd33",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=276491",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_9b7b4b79e8f0a5",
+      "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/169686/view",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_9ff053a95d2036",
+      "url": "https://www.mofa.go.kr/www/brd/m_4080/view.do?seq=370721",
+      "result": "http_error",
+      "http_status": 500
+    },
+    {
+      "source_id": "src_a06e0cd167c62e",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=285969",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_a14264b3e40618",
+      "url": "https://www.whitehouse.gov/presidential-actions/2025/06/adjusting-imports-of-aluminum-and-steel-into-the-united-states/",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_a36d67fb3ab7fd",
+      "url": "https://laws.e-gov.go.jp/api/1/lawdata/353AC0000000081",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_a41406d0f2b408",
+      "url": "https://www.pofmaoffice.gov.sg/regulations/",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_a426963519121a",
+      "url": "https://www.japaneselawtranslation.go.jp/en/laws/view/89",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_a4d09941830a5f",
+      "url": "https://www.me.go.kr/home/web/board/read.do?boardId=1858630&boardMasterId=939&menuId=10598",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_a586b93e5c638f",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=284005",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_a6acb605f74eed",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=276509",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_a6b87f3469a0eb",
+      "url": "https://www.mnd.go.kr/bbs/mnd/43915/I_8478189/artclView.do",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_a76dc0301ccd3c",
+      "url": "https://www.esd.whs.mil/Portals/54/Documents/DD/issuances/dodd/300009p.pdf",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_a770db8dc84a1a",
+      "url": "https://www.nato.int/en/what-we-do/deterrence-and-defence/standardization",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_acc5ad40639720",
+      "url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_ae920275905e73",
+      "url": "https://www.wto.org/english/docs_e/legal_e/24-scm_01_e.htm",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_ae9d9e605f4d17",
+      "url": "https://home.treasury.gov/system/files/136/January-2026-FX-Report.pdf",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_aff54840e3de58",
+      "url": "https://www.khs.go.kr/download/2025%EB%85%84%20%EA%B5%AD%EA%B0%80%EC%9C%A0%EC%82%B0%EC%B2%AD%20%EC%A3%BC%EC%9A%94%EC%97%85%EB%AC%B4%20%EC%B6%94%EC%A7%84%EA%B3%84%ED%9A%8D.pdf",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_b03e8654676446",
+      "url": "https://english.motir.go.kr/eng/article/EATCLdfa319ada/2558/view?bbsCdN=2&pageIndex=1",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_b0a9c4f14b8f31",
+      "url": "https://www.gov.uk/government/publications/carbon-border-adjustment-mechanism-cbam-policy-summary/carbon-border-adjustment-mechanism-cbam-policy-summary",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_b2adf538bac45a",
+      "url": "https://me.go.kr/home/file/readDownloadFile2.do?fileId=314448&fileName=1a24b734e145f7d08555f3ea47dc89f769ab52db4351f464a23f3f157122ccb0fa6aeed7a7b843e3aa30f4231f0d7118&fileSeq=1&openYn=Y",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_b396a04d5d5c27",
+      "url": "https://www.legislation.gov.uk/ukpga/1986/64/data.xml",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_b3fd46f15836ce",
+      "url": "https://docs-library.unoda.org/General_Assembly_First_Committee_-Seventy-Ninth_session_%282024%29/78-241-ROK-EN.pdf",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_b5996350aa0ed8",
+      "url": "https://unblock.federalregister.gov",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_b5da64d1244871",
+      "url": "https://www.cas.go.jp/jp/ryodo/kenkyu/takeshima/shiryo_vol001-05.html",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_b70dd85399aee6",
+      "url": "https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_b76a3a869dc739",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=242095",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_b85c450b6e36f6",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=204775",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_ba5a447c62804e",
+      "url": "https://www.fmprc.gov.cn/mfa_eng/xw/fyrbt/fyrbt/202405/t20240530_11349244.html",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_bb0240d82f024d",
+      "url": "https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=283849",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_bc232d66e3e236",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=276137",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_bea975229ff018",
+      "url": "https://contents.nahf.or.kr/item/level.do?levelId=gt.d_0010_0020_0030_0080",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_c0054c23a57bc8",
+      "url": "https://www.pref.shimane.lg.jp/admin/pref/takeshima/web-takeshima/takeshima04/takeshima04-1/hanabusa-dajoukan.html",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_c0994429058b3b",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=276269",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_c0da2b9640d94b",
+      "url": "https://www.cas.go.jp/jp/ryodo/kenkyu/takeshima/index.html",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_c3647450efa273",
+      "url": "https://documents.un.org/api/symbol/access?l=en&s=A%2FRES%2F79%2F34&t=pdf",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_c48487af452b52",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=277293",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_c5bf878a6cf9b9",
+      "url": "https://contents.history.go.kr/front/hm/view.do?levelId=hm_122_0020",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_c5d783062d7403",
+      "url": "https://www.fmprc.gov.cn/eng/xw/fyrbt/lxjzh/202405/t20240530_11347343.html",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_c9999a68fd76d8",
+      "url": "https://www.law.go.kr/LSW/lsInfoP.do?ancYnChk=0&lsId=010458",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_cab546058423ef",
+      "url": "https://contents.history.go.kr/mobile/kc/view.do?levelId=kc_i402800",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_d257fa362dae38",
+      "url": "https://m.korea.kr/news/policyNewsView.do?newsId=148770748",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_d3ddda496f0ed3",
+      "url": "https://www.energy.gov/cmei/manufacturing/30d-new-clean-vehicle-credit",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_d41c7fa75f4a66",
+      "url": "https://www.korea.kr/news/policyNewsView.do?newsId=148870807",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_d565b89c7e8595",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=148466",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_d56eee4ce51585",
+      "url": "https://www.mofa.go.kr/www/brd/m_26799/view.do?page=4&seq=369095",
+      "result": "http_error",
+      "http_status": 500
+    },
+    {
+      "source_id": "src_d576a70a478d14",
+      "url": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=204201",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_d88275333ea4b6",
+      "url": "https://www.bis.gov/",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_d8eb7be6e77f3e",
+      "url": "https://www.gov.uk/guidance/who-the-fcdo-can-support-abroad",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_d99867b358520d",
+      "url": "https://www.law.go.kr/LSW/precInfoP.do?evtNo=2009%EB%8F%8413846",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_d9b14244997f1e",
+      "url": "https://www.cac.gov.cn/2025-03/21/c_1744174262156096.htm",
+      "result": "network_error",
+      "error": "RemoteDisconnected: Remote end closed connection without response"
+    },
+    {
+      "source_id": "src_da239d7df44231",
+      "url": "https://www.motir.go.kr/kor/article/ATCL8764a1224/155118989/view",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_da2fe71ca314d1",
+      "url": "https://www.nist.gov/chips/implementation-strategies/national-security",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_dad0695a17cb91",
+      "url": "https://pub.iaea.org/MTCD/Publications/PDF/Pub1483_web.pdf",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_dbd8fb1071e44d",
+      "url": "https://registry.iho.int/productspec/view.do?category=product_ID&domainS=ALL&idx=223&product_ID=S-130&searchValue=&statusS=ALL",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_de08a7abb55fe1",
+      "url": "https://www.justice.gov/criminal/criminal-ccips/ccips-documents-and-reports",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_de3117469f4f9d",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=227699",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_de485720069360",
+      "url": "https://estatements.un.org/estatements/11.0010/20241024150000000/dRlyGhAWkgnrB/PuYCaqRf_nyc_en.pdf",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_e0bfbff78bf9cc",
+      "url": "https://www.gesetze-im-internet.de/englisch_gg/englisch_gg.html",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_e138acd24bd9c4",
+      "url": "https://www.korea.kr/news/policyNewsView.do?newsId=148897535",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_e18b1bc6014a4d",
+      "url": "http://www.npc.gov.cn/c2/c12435/201905/t20190521_276591.html",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_e2c6e72342817d",
+      "url": "https://www.maff.go.jp/j/pr/aff/2203/spe1_05.html",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_e4ffc7355f816c",
+      "url": "http://www.npc.gov.cn/npc/c2/c30834/201905/t20190521_278360.html",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_e51104a4e24803",
+      "url": "https://home.treasury.gov/news/press-releases/sb0269",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_ea3aea67cb29b4",
+      "url": "https://isearch.ccourt.go.kr/api/index/searcher/view?idx=00&eventNo=2013%ED%97%8C%EB%B0%94322&reSearch=",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_eabfa252fc857e",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=282793",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_eb1db390c7ea5b",
+      "url": "https://www.bis.gov/regulations/ear",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_ed8a599ab94eec",
+      "url": "https://sillok.history.go.kr/",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_edbe5668aa6c94",
+      "url": "https://www.mofa.go.kr/www/wpge/m_3528/contents.do",
+      "result": "http_error",
+      "http_status": 307
+    },
+    {
+      "source_id": "src_f1a922bba8e333",
+      "url": "https://www1.kaiho.mlit.go.jp/nihonkai/index_eng.html#international-communication",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_f305537b1587cd",
+      "url": "https://dfz.jl.gov.cn/zsjl/201701/t20170106_5216392.html",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_f311f5c7216512",
+      "url": "https://www.mofa.go.kr/www/brd/m_4080/view.do?seq=375378",
+      "result": "http_error",
+      "http_status": 500
+    },
+    {
+      "source_id": "src_f3b61be36ac31e",
+      "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/169007/view",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_f65751eeed9556",
+      "url": "https://law.go.kr/LSW/lsLinkCommonInfo.do?lspttninfSeq=163419",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_f810942f13aa66",
+      "url": "https://media.defense.gov/2025/Nov/14/2003820640/-1/-1/1/57-SECURITY-CONSULTATIVE-MEETING-JOINT-COMMUNIQUE.PDF",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_f9bf11dae5d0eb",
+      "url": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=205616",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_f9de155b16b771",
+      "url": "https://www.wto.org/english/tratop_e/tbt_e/tbt_e.htm",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_fa1d9e94982082",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=test&target=law&type=XML&MST=268861#article6",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_fadadffba8b788",
+      "url": "https://www.korea.kr/news/policyNewsView.do?newsId=148770351",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_fade6b77c6da79",
+      "url": "https://www.courts.go.jp/saibanin/introduction/work_and_role/index.html",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_fc15f970f0e62a",
+      "url": "https://www.motir.go.kr/kor/article/ATCL8764a1224/155118837/view",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_fcb0befcaad2be",
+      "url": "https://english.motir.go.kr/eng/article/EATCLdfa319ada/2527/view",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_fd21d4eaa3e2cb",
+      "url": "https://contents.nahf.or.kr/eddokViewer/contens.do?viewType=High&levelId=eddok.d_0004_0070_0030",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_fe4e47853a0791",
+      "url": "https://www.mnd.go.kr/mnd/235/subview.do",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "src_ff62a27194b8f1",
+      "url": "https://www.cisa.gov/sites/default/files/publications/DPRK_Cyber_Threat_Advisory_04152020_S508C.pdf",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "src_ffd281d3e0ff73",
+      "url": "https://english.ccourt.go.kr/common/board/Download.do?bcIdx=1007779&cbIdx=1128&streFileNm=2b2e607d-cae4-4ead-9a15-9875ec6e80f7.pdf",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_001",
+      "url": "https://dokdo.mofa.go.kr/m/kor/dokdo/government_position.jsp",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "v2src_002",
+      "url": "https://dokdo.mofa.go.kr/kor/dokdo/faq.jsp",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "v2src_003",
+      "url": "https://opendata.mofa.go.kr/mofapub/resource/Publication/13692.page",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "v2src_004",
+      "url": "https://contents.history.go.kr/id/hm_013_0070",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_005",
+      "url": "https://contents.history.go.kr/front/km/view.do?levelId=km_035_0090_0040_0040",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_006",
+      "url": "https://www.heritage.go.kr/heri/html/HtmlPage.do?pageNo=2_4_1_0&pg=%2Funesco%2FCulHeritage%2FCulHeritage_15.jsp",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_007",
+      "url": "https://www.khs.go.kr/multiBbz/FileDown.do?bbzId=newpublic&id=TnpJNE1nPT0%3D",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_008",
+      "url": "https://www.mnd.go.kr/mnd/179/subview.do",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_009",
+      "url": "https://www.mnd.go.kr/mnd/235/subview.do",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_010",
+      "url": "https://mnd.go.kr/bbs/mnd/13000005/DPIM_115233/artclView.do",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_011",
+      "url": "https://unikorea.go.kr/web/nkhr/contents/residence_0001",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "v2src_012",
+      "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/171495/view",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_013",
+      "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/171776/view",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_014",
+      "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/170028/view",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_015",
+      "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/171928/view",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_016",
+      "url": "https://www.pipc.go.kr/np/default/page.do?mCode=D060040010",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_017",
+      "url": "https://www.msit.go.kr/eng/bbs/view.do?bbsSeqNo=42&mId=4&mPid=2&nttSeqNo=1191&sCode=eng",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_018",
+      "url": "https://www.scourt.go.kr/nm/min_9/min_9_3/index.html",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "v2src_019",
+      "url": "https://isearch.ccourt.go.kr/view.do?docId=&eventNo=98%ED%97%8C%EB%A7%88141&idx=00",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_020",
+      "url": "https://www.scourt.go.kr/portal/news/NewsViewAction.work?gubun=4&seqnum=4966",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_021",
+      "url": "https://www.mma.go.kr/seoul/contents.do?mc=usr0000193",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_022",
+      "url": "https://www.mafra.go.kr/bbs/home/792/576158/artclView.do",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "v2src_023",
+      "url": "https://www.motir.go.kr/kor/article/ATCL8764a1224/155119148/view",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_024",
+      "url": "https://www.opm.go.kr/opm/news/press-release.do?articleNo=156014&attachNo=140676&mode=download",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_025",
+      "url": "https://ich.unesco.org/en/RL/kimjang-making-and-sharing-kimchi-in-the-republic-of-korea-00881",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "v2src_026",
+      "url": "https://www.iso.org/standard/78112.html",
+      "result": "blocked_or_auth",
+      "http_status": 403
+    },
+    {
+      "source_id": "v2src_027",
+      "url": "https://www.mcst.go.kr/english/useful/issue.jsp",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_028",
+      "url": "https://www.unesco.org/en/memory-world/hunminjeongum-manuscript?hub=1081",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "v2src_029",
+      "url": "https://contents.history.go.kr/front/hm/view.do?levelId=hm_013_0060",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_030",
+      "url": "https://contents.history.go.kr/mobile/kc/view.do?code=kc_age_10&levelId=kc_i100600",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_031",
+      "url": "https://contents.history.go.kr/front/hm/view.do?levelId=hm_131_0110",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_032",
+      "url": "https://contents.history.go.kr/photo/1920/1920_period02.do?imageId=mp_002_0020_0010_0010_0110&levelId=mp_002_0020_0010_0010_0110",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_033",
+      "url": "https://www.rekihaku.ac.jp/exhibitions/room1/",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_034",
+      "url": "https://www.rekihaku.ac.jp/event/2022_exhibitions_kikaku_kaya.html",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_035",
+      "url": "https://www.mofa.go.jp/press/release/press4e_001857.html",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_036",
+      "url": "https://www.mofa.go.jp/policy/postwar/page22e_000883.html",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_037",
+      "url": "https://www.mofa.go.jp/policy/other/bluebook/2022/en_html/references/r0101.html",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_038",
+      "url": "https://ich.unesco.org/en/RL/arirang-lyrical-folk-song-in-the-republic-of-korea-00445",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "v2src_039",
+      "url": "https://ich.unesco.org/en/state/democratic-people-s-republic-of-korea-KP?cp=KP&topic=es-estado",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "v2src_040",
+      "url": "https://ich.unesco.org/en/RL/nongak-community-band-music-dance-and-rituals-in-the-republic-of-korea-00717",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "v2src_041",
+      "url": "https://ich.unesco.org/en/RL/farmers-dance-of-china-s-korean-ethnic-group-00213",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "v2src_042",
+      "url": "https://www.ihchina.cn/project_details/14752/",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_043",
+      "url": "https://www.neac.gov.cn/seac/c100854/201401/1096682.shtml",
+      "result": "reachable",
+      "http_status": 200
+    },
+    {
+      "source_id": "v2src_044",
+      "url": "https://www.nopss.gov.cn/GB/219506/219508/219520/14640031.html",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "v2src_045",
+      "url": "https://www.nopss.gov.cn/n1/2016/1116/c373410-28872505.html",
+      "result": "reachable",
+      "http_status": 206
+    },
+    {
+      "source_id": "v2src_046",
+      "url": "https://www.rekihaku.ac.jp/research/list/2019_rekihaku_k_takada.html",
+      "result": "reachable",
+      "http_status": 200
+    }
+  ]
+}

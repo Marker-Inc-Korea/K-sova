@@ -1,0 +1,356 @@
+{
+  "schema_version": "ksova-v2.1-sharp-conflict-validation-report-1.0",
+  "candidates": 87,
+  "requests": 87,
+  "responses": 87,
+  "parsed": 3,
+  "invalid": [
+    {
+      "candidate_id": "sc_a01_4edf3e2495",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a01_a60b2be971",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a01_0e8c6225e6",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a01_31622d7f1c",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a01_c53fa7afd9",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a01_d173b5d2fe",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a01_bdcdac5f46",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a01_a6f7f338c0",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a01_af70e2e11c",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a01_ee25a0f915",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a01_080d7d6183",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a02_7736265ff1",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a02_5f0b2636dd",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a02_d5fce9d02e",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a02_7a89523f17",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a02_b55bd0a960",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a03_60b3de9368",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a03_e0f26a0825",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a03_0c579b4686",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a03_a0bb38e805",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a03_a4cc9e92b2",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a04_079a43a71f",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a04_11ce43f235",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a04_e5d4f7c35c",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a04_2211edda89",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a04_47014ec841",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a04_abd5f8d82d",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a04_c10c8f905f",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a04_2fd636296b",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a04_cb526df4f2",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a04_f18de51ae4",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a04_4061739a1f",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a04_92a7641147",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a05_906ceabb6b",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a05_e45d24fb7e",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a05_2665b74d2c",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a05_7c16305617",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a05_6393959e00",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a05_5897f7cc82",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a05_9076cad714",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a05_915ee44669",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a05_15b2255cf6",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a05_0ea9d63819",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a05_3e0537e738",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a05_0855a1a941",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a06_a6eeada01b",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a06_749b27804e",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a06_0f6ba72370",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a06_091a286876",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a06_9925a96205",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a06_ca7a4d9de8",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a06_626296f9ee",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a06_b1f28bd54a",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a07_1cf9349ac2",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a07_0b91ff5b6b",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a07_4e76c48697",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a07_f6c9e4c803",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a07_fdb1f76a3e",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a07_ba5c7dd0bc",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a07_a933504f76",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a07_302bb6bbd0",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a07_e5306af865",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a08_64d1877711",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a08_90642fbf83",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a08_e93c5815f2",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a08_878f1ee456",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a08_9ed51dc63b",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a08_a92fddc0e7",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a09_f31d640ff5",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a09_9c9a899f86",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a09_6fd7dd167b",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a09_4ccd6c7f1d",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a09_16588abeac",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a09_d595b3798b",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a09_75e3263d51",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a09_c1ed314a0c",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a10_933836ae20",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a10_941525782b",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a10_51d58a6b32",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a10_c7523b7f19",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a10_0f78212d9a",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a10_b26ccc46c3",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a10_1929acce1c",
+      "error": "invalid scores"
+    },
+    {
+      "candidate_id": "sc_a10_9d350df915",
+      "error": "invalid scores"
+    }
+  ],
+  "buckets": {
+    "core_pass": 1,
+    "drop": 2
+  },
+  "core_pass_by_arena": {
+    "A04": 1
+  },
+  "minimum_passed": 1,
+  "minimum_per_arena": 0,
+  "arena_shortfalls": {},
+  "pass": false
+}

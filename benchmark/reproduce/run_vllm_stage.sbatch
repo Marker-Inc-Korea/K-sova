@@ -12,12 +12,18 @@ set -euo pipefail
 
 [[ -n "${SLURM_JOB_ID:-}" ]] || { echo "GPU work must run inside Slurm" >&2; exit 2; }
 : "${MODEL_PATH:?set MODEL_PATH}"
-: "${MODEL_KIND:?set MODEL_KIND to gemma, qwen, exaone, or oss}"
+: "${MODEL_KIND:?set MODEL_KIND to gemma, qwen, exaone, swallow, or oss}"
 : "${REQUESTS:?set REQUESTS}"
 : "${OUTPUT:?set OUTPUT}"
 : "${RECORD_MODEL:?set RECORD_MODEL}"
 
-ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
+if [[ -n "${SLURM_SUBMIT_DIR:-}" && -f "${SLURM_SUBMIT_DIR}/benchmark/tools/chat_batch.py" ]]; then
+  ROOT=${SLURM_SUBMIT_DIR}/benchmark
+elif [[ -n "${SLURM_SUBMIT_DIR:-}" && -f "${SLURM_SUBMIT_DIR}/tools/chat_batch.py" ]]; then
+  ROOT=${SLURM_SUBMIT_DIR}
+else
+  ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
+fi
 PYTHON=${PYTHON:-python3}
 VLLM_BIN=${VLLM_BIN:-vllm}
 PORT=${PORT:-$((20000 + SLURM_JOB_ID % 20000))}
@@ -33,10 +39,11 @@ SHARD_COUNT=${SHARD_COUNT:-1}
 SHARD_INDEX=${SHARD_INDEX:-0}
 EXTRA_BODY_JSON=${EXTRA_BODY_JSON:-'{"seed":20260725}'}
 SERVER_READY_ATTEMPTS=${SERVER_READY_ATTEMPTS:-360}
+ALLOW_PARTIAL=${ALLOW_PARTIAL:-false}
 
 if [[ "${MODEL_KIND}" == "oss" && -n "${OSS_REASONING_EFFORT:-}" ]]; then
   case "${OSS_REASONING_EFFORT}" in
-    none|minimal|low|medium|high|xhigh|max) ;;
+    low|medium|high) ;;
     *) echo "unsupported OSS_REASONING_EFFORT=${OSS_REASONING_EFFORT}" >&2; exit 2 ;;
   esac
   EXTRA_BODY_JSON="{\"seed\":20260725,\"reasoning_effort\":\"${OSS_REASONING_EFFORT}\"}"
@@ -56,6 +63,7 @@ case "${MODEL_KIND}" in
   gemma) VLLM_ARGS+=(--reasoning-parser gemma4) ;;
   qwen) export VLLM_USE_DEEP_GEMM=0; VLLM_ARGS+=(--language-model-only --reasoning-parser qwen3) ;;
   exaone) VLLM_ARGS+=(--reasoning-parser qwen3) ;;
+  swallow) export VLLM_USE_DEEP_GEMM=0; VLLM_ARGS+=(--reasoning-parser qwen3 --dtype float16) ;;
   oss) ;;
   *) echo "unsupported MODEL_KIND=${MODEL_KIND}" >&2; exit 2 ;;
 esac
@@ -160,8 +168,16 @@ run_batch_with_retry() {
   return "${retry_status}"
 }
 
+primary_status=0
 run_batch_with_retry \
-  "${REQUESTS}" "${OUTPUT}" "${RECORD_MODEL}" "${ENABLE_THINKING}" "${MAX_TOKENS}"
+  "${REQUESTS}" "${OUTPUT}" "${RECORD_MODEL}" "${ENABLE_THINKING}" "${MAX_TOKENS}" \
+  || primary_status=$?
+if [[ "${primary_status}" -ne 0 ]]; then
+  if [[ "${ALLOW_PARTIAL}" != "true" ]]; then
+    exit "${primary_status}"
+  fi
+  printf 'preserving partial generation results (status=%s)\n' "${primary_status}"
+fi
 
 if [[ -n "${SECOND_OUTPUT:-}" ]]; then
   : "${SECOND_REQUESTS:?set SECOND_REQUESTS with SECOND_OUTPUT}"

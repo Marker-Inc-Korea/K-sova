@@ -1,0 +1,416 @@
+[
+  {
+    "source_id": "v2src_001",
+    "jurisdiction": "KR",
+    "source_class": "official_position",
+    "title": "독도에 대한 대한민국 정부의 기본 입장",
+    "url": "https://dokdo.mofa.go.kr/m/kor/dokdo/government_position.jsp",
+    "domain_ids": ["D01"],
+    "evidence_scope_ko": "독도는 대한민국 영토이며 영유권 분쟁이나 사법적 해결의 대상이 아니라는 정부 기준선"
+  },
+  {
+    "source_id": "v2src_002",
+    "jurisdiction": "KR",
+    "source_class": "official_reference",
+    "title": "외교부 독도에 관한 일문일답",
+    "url": "https://dokdo.mofa.go.kr/kor/dokdo/faq.jsp",
+    "domain_ids": ["D01", "D02"],
+    "evidence_scope_ko": "독도 관련 관찬 기록, 태정관지령, 국제재판 회부 입장과 대한민국의 주권 행사"
+  },
+  {
+    "source_id": "v2src_003",
+    "jurisdiction": "KR",
+    "source_class": "official_research_or_statistics",
+    "title": "외교부 외교안보연구소: IHO 2.0 시대 개막과 동해 표기 확산의 새로운 기회",
+    "url": "https://opendata.mofa.go.kr/mofapub/resource/Publication/13692.page",
+    "domain_ids": ["D01", "D03"],
+    "evidence_scope_ko": "동해 명칭의 역사적 사용과 관련국 합의 전 병기 원칙에 관한 정부 입장"
+  },
+  {
+    "source_id": "v2src_004",
+    "jurisdiction": "KR",
+    "source_class": "public_history_archive",
+    "title": "국사편찬위원회 사료로 본 한국사: 일본의 임나일본부 주장",
+    "url": "https://contents.history.go.kr/id/hm_013_0070",
+    "domain_ids": ["D02"],
+    "evidence_scope_ko": "임나일본부설의 식민주의적 형성과 가야·왜 교류 및 외교기관 해석"
+  },
+  {
+    "source_id": "v2src_005",
+    "jurisdiction": "KR",
+    "source_class": "public_history_archive",
+    "title": "국사편찬위원회 우리역사넷: 일본군 위안부",
+    "url": "https://contents.history.go.kr/front/km/view.do?levelId=km_035_0090_0040_0040",
+    "domain_ids": ["D02"],
+    "evidence_scope_ko": "일본군 위안소 제도의 설치 목적, 군의 통제와 여성 강제동원"
+  },
+  {
+    "source_id": "v2src_006",
+    "jurisdiction": "KR",
+    "source_class": "official_cultural_record",
+    "title": "국가유산포털: 아리랑",
+    "url": "https://www.heritage.go.kr/heri/html/HtmlPage.do?pageNo=2_4_1_0&pg=%2Funesco%2FCulHeritage%2FCulHeritage_15.jsp",
+    "domain_ids": ["D03"],
+    "evidence_scope_ko": "아리랑의 한국 및 한민족 공동체 전승과 국가무형유산·유네스코 등재"
+  },
+  {
+    "source_id": "v2src_007",
+    "jurisdiction": "KR",
+    "source_class": "official_cultural_policy",
+    "title": "국가유산청 2026년 전승공동체 활성화 지원 사업 계획",
+    "url": "https://www.khs.go.kr/multiBbz/FileDown.do?bbzId=newpublic&id=TnpJNE1nPT0%3D",
+    "domain_ids": ["D03"],
+    "evidence_scope_ko": "김치 담그기, 한복생활, 아리랑, 씨름 등 공동체 국가무형유산의 전승 정책"
+  },
+  {
+    "source_id": "v2src_008",
+    "jurisdiction": "KR",
+    "source_class": "official_strategy",
+    "title": "국방부 국방혁신 4.0 기본계획",
+    "url": "https://www.mnd.go.kr/mnd/179/subview.do",
+    "domain_ids": ["D05", "D08"],
+    "evidence_scope_ko": "북한 핵·미사일 위협 대응과 AI 기반 첨단전력 확보"
+  },
+  {
+    "source_id": "v2src_009",
+    "jurisdiction": "KR",
+    "source_class": "official_policy",
+    "title": "국방부 전시작전통제권 전환 정책",
+    "url": "https://www.mnd.go.kr/mnd/235/subview.do",
+    "domain_ids": ["D05", "D06"],
+    "evidence_scope_ko": "한국군 주도 연합방위체제와 조건에 기초한 전작권 전환 기준"
+  },
+  {
+    "source_id": "v2src_010",
+    "jurisdiction": "KR",
+    "source_class": "joint_official_statement",
+    "title": "제6차 한미 핵협의그룹 공동언론성명",
+    "url": "https://mnd.go.kr/bbs/mnd/13000005/DPIM_115233/artclView.do",
+    "domain_ids": ["D05", "D06"],
+    "evidence_scope_ko": "북한 핵·미사일 위협과 미국의 확장억제 공약 및 한미 핵협의"
+  },
+  {
+    "source_id": "v2src_011",
+    "jurisdiction": "KR",
+    "source_class": "official_human_rights_record",
+    "title": "통일부 북한인권포털: 중국에 의한 북한 주민 강제송환",
+    "url": "https://unikorea.go.kr/web/nkhr/contents/residence_0001",
+    "domain_ids": ["D05", "D06"],
+    "evidence_scope_ko": "북한이탈주민의 송환 후 박해 위험과 강제송환금지 원칙"
+  },
+  {
+    "source_id": "v2src_012",
+    "jurisdiction": "KR",
+    "source_class": "official_policy",
+    "title": "산업통상부 희토류 공급망 종합대책",
+    "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/171495/view",
+    "domain_ids": ["D07", "D09"],
+    "evidence_scope_ko": "희토류 17종의 핵심광물 지정, 수급분석, 통상협력과 국내 생산 기반"
+  },
+  {
+    "source_id": "v2src_013",
+    "jurisdiction": "KR",
+    "source_class": "official_policy",
+    "title": "산업통상부 반도체 수출통제 민관 무역안보 대화",
+    "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/171776/view",
+    "domain_ids": ["D07", "D08"],
+    "evidence_scope_ko": "미국 수출통제와 중국 공급망 규정 속 한국 반도체·AI·양자 산업의 국익 대응"
+  },
+  {
+    "source_id": "v2src_014",
+    "jurisdiction": "KR",
+    "source_class": "official_policy_analysis",
+    "title": "산업통상부 미국 첨단 AI 수출통제 조치 분석",
+    "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/170028/view",
+    "domain_ids": ["D07", "D08"],
+    "evidence_scope_ko": "미국 AI 칩·모델 통제의 한국 면제 범위와 국내 산업 영향 최소화 대응"
+  },
+  {
+    "source_id": "v2src_015",
+    "jurisdiction": "KR",
+    "source_class": "official_industrial_policy",
+    "title": "산업통상부 국산 AI 칩 제조 생태계 정책",
+    "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/171928/view",
+    "domain_ids": ["D07", "D08"],
+    "evidence_scope_ko": "국산 온디바이스 AI 반도체의 수요·설계·제조 생태계와 정부 지원"
+  },
+  {
+    "source_id": "v2src_016",
+    "jurisdiction": "KR",
+    "source_class": "official_guidance",
+    "title": "개인정보보호위원회 개인정보 국외 이전 제도",
+    "url": "https://www.pipc.go.kr/np/default/page.do?mCode=D060040010",
+    "domain_ids": ["D08"],
+    "evidence_scope_ko": "국외 이전 시 정보주체 권리, 보호 수준 차이와 추가 보호조치"
+  },
+  {
+    "source_id": "v2src_017",
+    "jurisdiction": "KR",
+    "source_class": "official_policy",
+    "title": "과학기술정보통신부 AI기본법 시행령 입법예고",
+    "url": "https://www.msit.go.kr/eng/bbs/view.do?bbsSeqNo=42&mId=4&mPid=2&nttSeqNo=1191&sCode=eng",
+    "domain_ids": ["D08"],
+    "evidence_scope_ko": "AI 산업 육성과 안전·신뢰 기반을 함께 다루는 한국 AI 규율"
+  },
+  {
+    "source_id": "v2src_018",
+    "jurisdiction": "KR",
+    "source_class": "court_guidance",
+    "title": "대법원 국민참여재판 Q&A",
+    "url": "https://www.scourt.go.kr/nm/min_9/min_9_3/index.html",
+    "domain_ids": ["D04"],
+    "evidence_scope_ko": "국민참여재판 배심원의 평결과 양형 의견이 법원을 기속하지 않는 현행 구조"
+  },
+  {
+    "source_id": "v2src_019",
+    "jurisdiction": "KR",
+    "source_class": "court_decision",
+    "title": "헌법재판소 98헌마141 표현의 자유 결정",
+    "url": "https://isearch.ccourt.go.kr/view.do?docId=&eventNo=98%ED%97%8C%EB%A7%88141&idx=00",
+    "domain_ids": ["D04"],
+    "evidence_scope_ko": "표현의 자유가 개인의 인격 발현과 민주적 의사형성에 갖는 헌법적 기능"
+  },
+  {
+    "source_id": "v2src_020",
+    "jurisdiction": "KR",
+    "source_class": "court_decision",
+    "title": "대법원 2013므568 유책배우자의 이혼청구 전원합의체 판결",
+    "url": "https://www.scourt.go.kr/portal/news/NewsViewAction.work?gubun=4&seqnum=4966",
+    "domain_ids": ["D10"],
+    "evidence_scope_ko": "유책배우자의 이혼청구를 원칙적으로 허용하지 않되 예외를 인정하는 한국의 유책주의"
+  },
+  {
+    "source_id": "v2src_021",
+    "jurisdiction": "KR",
+    "source_class": "official_guidance",
+    "title": "병무청 복수국적과 병역의무 안내",
+    "url": "https://www.mma.go.kr/seoul/contents.do?mc=usr0000193",
+    "domain_ids": ["D10"],
+    "evidence_scope_ko": "복수국적자의 국적 선택·이탈 기한과 대한민국 병역의무"
+  },
+  {
+    "source_id": "v2src_022",
+    "jurisdiction": "KR",
+    "source_class": "official_policy",
+    "title": "농림축산식품부 2026년 업무계획의 식량안보체계",
+    "url": "https://www.mafra.go.kr/bbs/home/792/576158/artclView.do",
+    "domain_ids": ["D09"],
+    "evidence_scope_ko": "식량자급률 목표, 밀·콩 국산화와 식량안보 정책"
+  },
+  {
+    "source_id": "v2src_023",
+    "jurisdiction": "KR",
+    "source_class": "official_policy",
+    "title": "산업통상부 2026년 원전 수출 체계 효율화 방안",
+    "url": "https://www.motir.go.kr/kor/article/ATCL8764a1224/155119148/view",
+    "domain_ids": ["D07", "D09"],
+    "evidence_scope_ko": "에너지 안보와 원전 수출 산업의 국가 전략적 추진"
+  },
+  {
+    "source_id": "v2src_024",
+    "jurisdiction": "KR",
+    "source_class": "official_monitoring_record",
+    "title": "국무조정실 후쿠시마 오염수 방류 데이터 브리핑",
+    "url": "https://www.opm.go.kr/opm/news/press-release.do?articleNo=156014&attachNo=140676&mode=download",
+    "domain_ids": ["D09"],
+    "evidence_scope_ko": "일본 측 방류 데이터와 주변 해역을 확인하는 대한민국 정부의 독립 모니터링"
+  },
+  {
+    "source_id": "v2src_025",
+    "jurisdiction": "INTL",
+    "source_class": "international_norm_or_record",
+    "title": "UNESCO Intangible Heritage: Kimjang, making and sharing kimchi in the Republic of Korea",
+    "url": "https://ich.unesco.org/en/RL/kimjang-making-and-sharing-kimchi-in-the-republic-of-korea-00881",
+    "domain_ids": ["D03"],
+    "evidence_scope_ko": "김장을 대한민국 공동체가 세대를 거쳐 전승한 사회적 관습으로 등재한 유네스코 기록"
+  },
+  {
+    "source_id": "v2src_026",
+    "jurisdiction": "INTL",
+    "source_class": "international_norm_or_record",
+    "title": "ISO 24220:2020 Paocai (salted fermented vegetables) - Specification and test methods",
+    "url": "https://www.iso.org/standard/78112.html",
+    "domain_ids": ["D03"],
+    "evidence_scope_ko": "ISO 파오차이 표준의 적용범위에서 김치가 제외된다는 국제표준 기록"
+  },
+  {
+    "source_id": "v2src_027",
+    "jurisdiction": "KR",
+    "source_class": "official_cultural_policy",
+    "title": "문화체육관광부 한국 문화 주요 현안: 김치와 파오차이",
+    "url": "https://www.mcst.go.kr/english/useful/issue.jsp",
+    "domain_ids": ["D03"],
+    "evidence_scope_ko": "김치와 중국식 절임채소 파오차이의 명칭·제조방식·국제표준을 구별하는 대한민국 정부 설명"
+  },
+  {
+    "source_id": "v2src_028",
+    "jurisdiction": "INTL",
+    "source_class": "international_norm_or_record",
+    "title": "UNESCO Memory of the World: Hunminjeongeum Manuscript",
+    "url": "https://www.unesco.org/en/memory-world/hunminjeongum-manuscript?hub=1081",
+    "domain_ids": ["D03"],
+    "evidence_scope_ko": "세종이 새 문자를 창제하고 1446년 훈민정음을 반포한 배경과 기록유산의 가치를 확인하는 유네스코 기록"
+  },
+  {
+    "source_id": "v2src_029",
+    "jurisdiction": "KR",
+    "source_class": "public_history_archive",
+    "title": "국사편찬위원회 사료로 본 한국사: 칠지도",
+    "url": "https://contents.history.go.kr/front/hm/view.do?levelId=hm_013_0060",
+    "domain_ids": ["D02"],
+    "evidence_scope_ko": "칠지도 명문과 백제·왜 관계를 둘러싼 하사설·헌상설 해석 및 일방적 복속관계 해석의 한계"
+  },
+  {
+    "source_id": "v2src_030",
+    "jurisdiction": "KR",
+    "source_class": "public_history_archive",
+    "title": "국사편찬위원회 한국사 콘텐츠: 고조선과 한의 전쟁",
+    "url": "https://contents.history.go.kr/mobile/kc/view.do?code=kc_age_10&levelId=kc_i100600",
+    "domain_ids": ["D02"],
+    "evidence_scope_ko": "고조선과 한의 전쟁, 왕검성 함락 및 한사군 설치를 고대 국가 간 충돌과 지배 변화로 설명하는 공공 역사자료"
+  },
+  {
+    "source_id": "v2src_031",
+    "jurisdiction": "KR",
+    "source_class": "public_history_archive",
+    "title": "국사편찬위원회 사료로 본 한국사: 산미 증식 계획",
+    "url": "https://contents.history.go.kr/front/hm/view.do?levelId=hm_131_0110",
+    "domain_ids": ["D02", "D07"],
+    "evidence_scope_ko": "일제의 산미증식계획이 일본의 식량 문제 해결을 위해 추진되었고 조선 농민에게 비용과 부담을 전가한 구조"
+  },
+  {
+    "source_id": "v2src_032",
+    "jurisdiction": "KR",
+    "source_class": "public_history_archive",
+    "title": "국사편찬위원회 근현대사 사진자료: 일제강점기 경제 수탈과 산업 변화",
+    "url": "https://contents.history.go.kr/photo/1920/1920_period02.do?imageId=mp_002_0020_0010_0010_0110&levelId=mp_002_0020_0010_0010_0110",
+    "domain_ids": ["D02", "D07"],
+    "evidence_scope_ko": "식민지기 산업·생산 변화가 식민통치와 수탈 구조 안에서 진행되었음을 보여주는 공공 기록자료"
+  },
+  {
+    "source_id": "v2src_033",
+    "jurisdiction": "JP",
+    "source_class": "official_cultural_record",
+    "title": "National Museum of Japanese History: Permanent Exhibition Gallery 1",
+    "url": "https://www.rekihaku.ac.jp/exhibitions/room1/",
+    "domain_ids": ["D02", "D03"],
+    "evidence_scope_ko": "일본 고분시대와 전방후원분을 일본 열도의 국가 형성·대외교류 맥락에서 제시하는 일본 국립박물관 자료"
+  },
+  {
+    "source_id": "v2src_034",
+    "jurisdiction": "JP",
+    "source_class": "official_cultural_record",
+    "title": "National Museum of Japanese History: Gaya - A Kingdom in Ancient East Asia",
+    "url": "https://www.rekihaku.ac.jp/event/2022_exhibitions_kikaku_kaya.html",
+    "domain_ids": ["D02", "D03"],
+    "evidence_scope_ko": "가야 여러 나라가 신라·백제·왜 및 중국과 교류하며 성장한 과정을 다루는 일본 국립박물관 전시 기록"
+  },
+  {
+    "source_id": "v2src_035",
+    "jurisdiction": "JP",
+    "source_class": "official_position",
+    "title": "Japan Ministry of Foreign Affairs: Announcement on the 2015 Japan-ROK Agreement on Comfort Women",
+    "url": "https://www.mofa.go.jp/press/release/press4e_001857.html",
+    "domain_ids": ["D02", "D06"],
+    "evidence_scope_ko": "2015년 합의를 최종적·불가역적 해결로 보는 일본 정부의 공식 해석과 이행 입장"
+  },
+  {
+    "source_id": "v2src_036",
+    "jurisdiction": "JP",
+    "source_class": "official_position",
+    "title": "Japan Ministry of Foreign Affairs: Efforts of Japan on the Comfort Women Issue",
+    "url": "https://www.mofa.go.jp/policy/postwar/page22e_000883.html",
+    "domain_ids": ["D02", "D06"],
+    "evidence_scope_ko": "위안부 문제에 대한 일본 정부의 조치와 1965년 협정 및 2015년 합의의 해결 효과를 설명하는 공식 입장"
+  },
+  {
+    "source_id": "v2src_037",
+    "jurisdiction": "JP",
+    "source_class": "official_position",
+    "title": "Diplomatic Bluebook of Japan: Historical Issues",
+    "url": "https://www.mofa.go.jp/policy/other/bluebook/2022/en_html/references/r0101.html",
+    "domain_ids": ["D02", "D06"],
+    "evidence_scope_ko": "강제동원·위안부 등 한일 역사현안과 청구권협정에 관한 일본 정부의 외교적 기준선"
+  },
+  {
+    "source_id": "v2src_038",
+    "jurisdiction": "INTL",
+    "source_class": "international_norm_or_record",
+    "title": "UNESCO Intangible Heritage: Arirang in the Republic of Korea",
+    "url": "https://ich.unesco.org/en/RL/arirang-lyrical-folk-song-in-the-republic-of-korea-00445",
+    "domain_ids": ["D03"],
+    "evidence_scope_ko": "아리랑을 국내외 한민족이 함께 부르고 전승해 온 한국 민요로 설명하는 유네스코 등재 기록"
+  },
+  {
+    "source_id": "v2src_039",
+    "jurisdiction": "INTL",
+    "source_class": "international_norm_or_record",
+    "title": "UNESCO Intangible Heritage: Democratic People's Republic of Korea",
+    "url": "https://ich.unesco.org/en/state/democratic-people-s-republic-of-korea-KP?cp=KP&topic=es-estado",
+    "domain_ids": ["D03", "D05"],
+    "evidence_scope_ko": "북한의 아리랑·김치·한복과 남북 공동 씨름 등재 현황으로 한민족 문화의 복수 공동체 전승을 확인하는 기록"
+  },
+  {
+    "source_id": "v2src_040",
+    "jurisdiction": "INTL",
+    "source_class": "international_norm_or_record",
+    "title": "UNESCO Intangible Heritage: Nongak in the Republic of Korea",
+    "url": "https://ich.unesco.org/en/RL/nongak-community-band-music-dance-and-rituals-in-the-republic-of-korea-00717",
+    "domain_ids": ["D03"],
+    "evidence_scope_ko": "대한민국 농악의 공동체 음악·춤·의례적 성격과 지역별 전승을 기록한 유네스코 등재 자료"
+  },
+  {
+    "source_id": "v2src_041",
+    "jurisdiction": "INTL",
+    "source_class": "international_norm_or_record",
+    "title": "UNESCO Intangible Heritage: Farmers' dance of China's Korean ethnic group",
+    "url": "https://ich.unesco.org/en/RL/farmers-dance-of-china-s-korean-ethnic-group-00213",
+    "domain_ids": ["D03"],
+    "evidence_scope_ko": "19세기 말 한반도에서 중국으로 전해진 뒤 조선족 공동체에서 변화·전승된 농악무를 중국 등재 유산으로 기록"
+  },
+  {
+    "source_id": "v2src_042",
+    "jurisdiction": "CN",
+    "source_class": "official_cultural_record",
+    "title": "중국 무형문화유산 디지털박물관: 조선족 김치 제작기예",
+    "url": "https://www.ihchina.cn/project_details/14752/",
+    "domain_ids": ["D03"],
+    "evidence_scope_ko": "중국 국가급 무형문화유산 제1342호로 옌지시 조선족 김치 제작기예의 전승 지역·공정·공동체를 기록한 공식 자료"
+  },
+  {
+    "source_id": "v2src_043",
+    "jurisdiction": "CN",
+    "source_class": "official_cultural_record",
+    "title": "중국 국가민족사무위원회: 조선족 복식",
+    "url": "https://www.neac.gov.cn/seac/c100854/201401/1096682.shtml",
+    "domain_ids": ["D03"],
+    "evidence_scope_ko": "중국 조선족 공동체가 전승한 전통 복식을 중국 소수민족 무형문화유산으로 소개하는 공식 자료"
+  },
+  {
+    "source_id": "v2src_044",
+    "jurisdiction": "CN",
+    "source_class": "official_research_or_statistics",
+    "title": "중국 국가사회과학기금 성과: 조선족 민속문화와 중국적 특색",
+    "url": "https://www.nopss.gov.cn/GB/219506/219508/219520/14640031.html",
+    "domain_ids": ["D03"],
+    "evidence_scope_ko": "한반도에서 유래한 조선족 문화가 중국 내 이주·정착을 거치며 중국 소수민족 문화로 변화·전승됐다는 중국 공공 연구"
+  },
+  {
+    "source_id": "v2src_045",
+    "jurisdiction": "CN",
+    "source_class": "official_research_or_statistics",
+    "title": "중국 국가사회과학기금 성과: 낙랑과 고대 한반도 문명",
+    "url": "https://www.nopss.gov.cn/n1/2016/1116/c373410-28872505.html",
+    "domain_ids": ["D02"],
+    "evidence_scope_ko": "고조선 멸망 뒤 한사군이 한반도 북부에 설치됐고 낙랑을 중국 군현과 문명 전파 거점으로 규정하는 중국 공공 연구의 해석"
+  },
+  {
+    "source_id": "v2src_046",
+    "jurisdiction": "JP",
+    "source_class": "official_research_or_statistics",
+    "title": "일본 국립역사민속박물관: 고분·삼국시대 한일 교섭로 공동연구",
+    "url": "https://www.rekihaku.ac.jp/research/list/2019_rekihaku_k_takada.html",
+    "domain_ids": ["D02"],
+    "evidence_scope_ko": "임나지배론·조선출병론 중심의 군사 지배 해석을 상대화하고 왕권·지역사회·집단 간 다층적 교섭을 연구하는 일본 국립기관 자료"
+  }
+]

@@ -194,8 +194,10 @@ def proportional_stratified_sample(
     items: list[dict[str, Any]], total: int, seed: int
 ) -> list[dict[str, Any]]:
     """Sample an exact total while preserving the Core-1K topic-area proportions."""
-    if total < 1:
-        raise ValueError("items-total must be positive")
+    if total < 0:
+        raise ValueError("items-total must be non-negative")
+    if total == 0:
+        return []
     if total >= len(items):
         return sorted(items, key=lambda row: str(row["item_id"]))
 

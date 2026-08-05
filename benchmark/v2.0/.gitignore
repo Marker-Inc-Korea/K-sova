@@ -1,0 +1,52 @@
+# Local calibration lineage. Public artifacts are selected below.
+calibration_150/*
+!calibration_150/HUMAN_REVIEW.md
+!calibration_150/REPORT.md
+
+# The 150-item release keeps only the frozen set and compact audit/evaluation record.
+expansion_150/*
+!expansion_150/REPORT.md
+!expansion_150/audit/
+expansion_150/audit/*
+!expansion_150/audit/JUDGE_PROMPT_CORRECTION.md
+!expansion_150/audit/final_assembly_report.json
+!expansion_150/audit/final_deterministic_audit.json
+!expansion_150/data/
+expansion_150/data/*
+!expansion_150/data/final_150_review_ready.jsonl
+!expansion_150/evaluation/
+expansion_150/evaluation/*
+!expansion_150/evaluation/EVALUATION_PROTOCOL.json
+!expansion_150/evaluation/ITEM_DISCRIMINATION_AUDIT.md
+!expansion_150/evaluation/MODEL_EVALUATION_REPORT.md
+!expansion_150/evaluation/generation_audit.json
+!expansion_150/evaluation/item_discrimination_report.json
+!expansion_150/evaluation/judge_request_report.json
+!expansion_150/evaluation/model_evaluation_summary.json
+
+# Superseded pilot execution trees and Slurm wrappers are retained in local archives.
+pilot/
+slurm/
+
+# Keep only tools used by the frozen 150-item audit or current 1,000-item pipeline.
+tools/*
+!tools/analyze_v2_item_discrimination.py
+!tools/audit_expansion_review_set.py
+!tools/audit_v2_generation_outputs.py
+!tools/build_final_semantic_dedup_requests.py
+!tools/build_final_semantic_dedup_retry_requests.py
+!tools/build_v2_evaluation_requests.py
+!tools/build_v2_judge_requests.py
+!tools/build_v2_judge_retry_requests.py
+!tools/collect_source_discovery_leads.py
+!tools/discover_calibration_sources.py
+!tools/parse_final_semantic_dedup.py
+!tools/parse_v2_judgments.py
+!tools/resolve_trusted_discovery_sources.py
+!tools/source_atom_pipeline.py
+!tools/source_document_pipeline.py
+!tools/source_gap_pipeline.py
+!tools/source_issue_pipeline.py
+!tools/summarize_v2_model_evaluation.py
+!tools/validate_v2_target_outputs.py
+!tools/write_expansion_report.py
