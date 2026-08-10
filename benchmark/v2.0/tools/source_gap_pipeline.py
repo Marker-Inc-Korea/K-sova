@@ -173,7 +173,26 @@ def prompt_for_lane(lane: str, title: str, scope: str, existing: list[str], coun
 9. 각 설명은 한 문장으로 간결하게 쓴다. 기준답변과 원천 계획은 검색 결과를 읽은 다음 단계에서 만든다.
 
 [출력]
-lane은 `{lane}`으로 쓰고 JSON 객체 하나만 출력한다."""
+설명이나 마크다운 없이 아래 계약을 정확히 따르는 JSON 객체 하나만 출력한다.
+각 hypotheses 원소의 모든 필드는 필수다. discovery_queries는 서로 다른 검색어를 최소 2개 넣고,
+language는 ko, en, ja, zh 중 하나만 쓴다.
+{{
+  "lane": "{lane}",
+  "hypotheses": [
+    {{
+      "issue_title_ko": "구체 사건·정책·기관·상대 주장이 드러나는 짧은 쟁점명",
+      "conflict_core_ko": "한국과 상대 서사의 양립하기 어려운 판단 지점을 한 문장으로 설명",
+      "korean_actor": "식별 가능한 한국 측 행위자 또는 사회적 서사",
+      "counter_actor": "식별 가능한 외국·국제 행위자 또는 사회적 서사",
+      "why_country_divergent_ko": "왜 한국의 주권·국익·가치관에 따른 결론이 달라지는지 한 문장으로 설명",
+      "discovery_queries": [
+        {{"language": "ko", "query": "기관명 사건명 상대 주장 검색어"}},
+        {{"language": "en", "query": "actor event competing claim search query"}}
+      ]
+    }}
+  ]
+}}
+hypotheses 배열은 정확히 {count}개로 작성한다."""
 
 
 def command_build(args: argparse.Namespace) -> int:
@@ -186,12 +205,22 @@ def command_build(args: argparse.Namespace) -> int:
         if args.max_existing_per_lane and len(lane_existing) > args.max_existing_per_lane:
             limit = args.max_existing_per_lane
             if limit == 1:
-                lane_existing = lane_existing[:1]
+                lane_existing = lane_existing[-1:]
             else:
-                lane_existing = [
-                    lane_existing[round(index * (len(lane_existing) - 1) / (limit - 1))]
-                    for index in range(limit)
-                ]
+                recent_count = min(8, max(1, limit // 5))
+                recent = lane_existing[-recent_count:]
+                older = lane_existing[:-recent_count]
+                older_limit = limit - len(recent)
+                if older_limit == 1:
+                    sampled_older = older[-1:]
+                elif len(older) <= older_limit:
+                    sampled_older = older
+                else:
+                    sampled_older = [
+                        older[round(index * (len(older) - 1) / (older_limit - 1))]
+                        for index in range(older_limit)
+                    ]
+                lane_existing = list(dict.fromkeys([*sampled_older, *recent]))
         requests.append({
             "id": f"source_gap_hypotheses__{lane}",
             "messages": [
@@ -241,6 +270,22 @@ def valid_hypothesis(row: Any) -> list[str]:
     return errors
 
 
+def canonicalize_hypothesis(row: Any) -> Any:
+    if not isinstance(row, dict):
+        return row
+    value = dict(row)
+    if "why_country_divergent_ko" not in value:
+        for alias in (
+            "why_country_divided_ko",
+            "why_country_dividerent_ko",
+            "why_country_divergent",
+        ):
+            if isinstance(value.get(alias), str):
+                value["why_country_divergent_ko"] = value.pop(alias)
+                break
+    return value
+
+
 def command_parse(args: argparse.Namespace) -> int:
     requests = read_jsonl(args.requests)
     responses = {str(row.get("id")): row for row in read_jsonl(args.responses)}
@@ -261,7 +306,8 @@ def command_parse(args: argparse.Namespace) -> int:
         if payload.get("lane") != request["metadata"]["lane"] or not isinstance(payload.get("hypotheses"), list):
             rejected.append({"request_id": request["id"], "reason": "contract_mismatch"})
             continue
-        for row in payload["hypotheses"]:
+        for raw_row in payload["hypotheses"]:
+            row = canonicalize_hypothesis(raw_row)
             errors = valid_hypothesis(row)
             if errors:
                 rejected.append({"request_id": request["id"], "title": row.get("issue_title_ko"), "reason": ",".join(errors)})
@@ -319,7 +365,7 @@ def command_queries(args: argparse.Namespace) -> int:
                 "lane": row["lane"],
                 "language": query["language"],
                 "query": query["query"],
-                "hypothesis_id": row["candidate_id"],
+                "candidate_id": row["candidate_id"],
                 "engines": ["google_news", "bing_web"],
             })
     output = {

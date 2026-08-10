@@ -1,0 +1,69 @@
+{
+  "phase1": {
+    "train": {
+      "rows": 84,
+      "max_tokens": 390,
+      "mean_tokens": 234.655,
+      "min_assistant_tokens": 86,
+      "mean_assistant_tokens": 155.381
+    },
+    "dev": {
+      "rows": 12,
+      "max_tokens": 359,
+      "mean_tokens": 257.333,
+      "min_assistant_tokens": 128,
+      "mean_assistant_tokens": 164.917
+    }
+  },
+  "phase2": {
+    "train": {
+      "rows": 196,
+      "max_tokens": 577,
+      "mean_tokens": 368.648,
+      "min_assistant_tokens": 134,
+      "mean_assistant_tokens": 256.934
+    },
+    "dev": {
+      "rows": 28,
+      "max_tokens": 529,
+      "mean_tokens": 382.5,
+      "min_assistant_tokens": 167,
+      "mean_assistant_tokens": 264.357
+    }
+  },
+  "phase3": {
+    "train": {
+      "rows": 84,
+      "max_tokens": 680,
+      "mean_tokens": 332.262,
+      "min_assistant_tokens": 51,
+      "mean_assistant_tokens": 152.095
+    },
+    "dev": {
+      "rows": 12,
+      "max_tokens": 659,
+      "mean_tokens": 352.25,
+      "min_assistant_tokens": 51,
+      "mean_assistant_tokens": 160.167
+    }
+  },
+  "model_path": "Qwen/Qwen3.5-9B",
+  "model_config_sha256": "d0883072e01861ed0b2d47be3c16c36a8e81c224c7ffaa310c6558fb3f932b05",
+  "data_sha256": {
+    "phase1_train": "033dff20e9c287309e1c1bd08f887e09861430fccf965d7b6327f051e8674394",
+    "phase1_dev": "ab8f178478afa2d83aec2eab43fa3623e57d4c538d45fcb2c896bdcac34f42ff",
+    "phase2_train": "f2ce9b5e4f8ca003ee20a037fd8bc68bd54da3ebe698b01942c2f1a946b4f60b",
+    "phase2_dev": "28bff92fe856ff5d6d079aee38ad81f5ddbd81a10a508ae547ca4fd446a0c85b",
+    "phase3_train": "3d543702d9623520388e3e8a34e550f993a2d1093c79261cda23b3eebb756583",
+    "phase3_dev": "b95fc9ca1956546d92ccf1ca21cc595cdad31a2d37c3288dc604a239fa5d791e"
+  },
+  "max_length": 2048,
+  "seed": 20260810,
+  "lora": {
+    "r": 16,
+    "alpha": 32,
+    "dropout": 0.05,
+    "target_strategy": "qwen35_language_full_linear_attention_and_mlp",
+    "target_modules": "model\\.language_model\\.layers\\.\\d+\\.(?:mlp\\.(?:gate_proj|up_proj|down_proj)|self_attn\\.(?:q_proj|k_proj|v_proj|o_proj)|linear_attn\\.(?:in_proj_qkv|in_proj_z|out_proj|in_proj_a|in_proj_b))"
+  }
+}

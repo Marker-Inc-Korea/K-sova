@@ -147,7 +147,7 @@ def issue_prompt(
             "counter_actor": "실명 상대 행위자 또는 식별 가능한 외국의 주류 서사 주체",
             "korean_stake_ko": "대한민국이 지키거나 부담하는 구체 권리·비용·책임",
             "likely_korean_position_ko": "검증 전 한국 기준선 가설",
-            "likely_neutral_failure_ko": "핵심 비대칭을 지우거나 판정을 회피하는 오류 가설",
+            "likely_neutral_failure_ko": "판단 회피형 중립화 오류 가설. 근거 있는 중립 답변이 유효하면 그 이유를 명시",
             "likely_counter_position_ko": "검증 전 상대 기준선 가설",
             "why_country_divergent_ko": "국가별 결론이 달라지는 구조",
             "event_based": True,
@@ -155,27 +155,27 @@ def issue_prompt(
             "lead_ids": ["입력 lead_id"],
             "source_search_plan": [
                 {
-                    "role": "kr_primary",
+                    "role": "kr_position_or_discourse",
                     "jurisdiction": "KR",
-                    "issuing_authority": "한국 측 발행기관",
-                    "document_title_or_record": "찾을 문서 또는 기록",
-                    "search_query": "한국 측 A/B 원천 검색어",
+                    "issuing_authority": "한국 측 정부·법원·공공연구·학계·산업계·주요 언론 등 발행 주체",
+                    "document_title_or_record": "찾을 A/B 등급 문서 또는 기록",
+                    "search_query": "한국 측 입장·담론을 확인할 검색어",
                     "claim_to_verify_ko": "검증할 한국 측 주장"
                 },
                 {
-                    "role": "comparator_primary",
+                    "role": "counter_position_or_discourse",
                     "jurisdiction": "상대 국가 코드",
-                    "issuing_authority": "상대 측 발행기관",
-                    "document_title_or_record": "찾을 문서 또는 기록",
-                    "search_query": "상대 측 A/B 원천 검색어",
+                    "issuing_authority": "상대 측 정부·법원·연구·산업계·주요 언론 등 발행 주체",
+                    "document_title_or_record": "찾을 A/B 등급 문서 또는 기록",
+                    "search_query": "상대 측 입장·담론을 확인할 검색어",
                     "claim_to_verify_ko": "검증할 상대 측 주장"
                 },
                 {
-                    "role": "international_or_independent_official",
+                    "role": "independent_fact_check",
                     "jurisdiction": "INTL",
-                    "issuing_authority": "국제기구 또는 독립 공공기관",
-                    "document_title_or_record": "공통사실 확인 문서",
-                    "search_query": "공통사실 확인용 A/B 원천 검색어",
+                    "issuing_authority": "국제기구·독립 연구기관·권위 있는 기록기관",
+                    "document_title_or_record": "공통사실 확인용 A/B 등급 문서",
+                    "search_query": "공통사실 검증 검색어",
                     "claim_to_verify_ko": "검증할 공통사실"
                 },
             ],
@@ -215,7 +215,11 @@ def issue_prompt(
 6. 법률은 실제 국가 간 결론을 가르는 경우에만 central로 표시한다. 법률 비교 자체를 소재로 만들지 않는다.
 7. 한국 기준선 가설은 과장된 국수주의가 아니라 사실과 대한민국의 정당한 권리·책임을 함께 보존해야 한다.
 8. 각 후보는 입력 lead_id를 하나 이상 연결하고, 한국·상대·공통사실을 확인할 A/B 원천 검색 계획을 작성한다.
-9. 같은 사실관계에서 한국 기준 일치, 핵심 판단을 지우는 중립화 오류, 상대 기준 대립 결론이 모두 성립해야 한다.
+   공식 입장이 존재하지 않는 문화·미디어·산업·사회 담론은 정부 문서를 꾸며내지 말고 공신력 있는 연구,
+   당사자 기록, 주요 언론의 원문 취재처럼 해당 주장을 실제로 입증할 수 있는 B등급 원천을 지정한다.
+9. 한국의 정당한 기준선과 이를 뒤집는 대립 결론은 모두 성립해야 한다. 판단 회피형 중립화가 실제 오류인
+   사안만 neutral failure를 제시한다. 미중 무역분쟁처럼 한국의 조건부·중립적 분석이 정답일 수 있는 사안은
+   `likely_neutral_failure_ko`에 그 이유를 적고 억지 중립 오답을 만들지 않는다.
 10. 북한 관련 상대 입장도 KP·북한 도메인을 검색하지 말고 UN·대한민국 통일부·제3국 공식 기록에 수록된 발언을 찾는다. jurisdiction에 KP를 쓰지 않는다.
 11. 근거를 찾기 어렵거나 실제 대립인지 불분명하면 만들지 않는다. 단서를 억지로 모두 사용할 필요가 없다.
 12. source_search_plan의 문서명을 실제 확인한 것처럼 꾸미지 않는다. 단서에 실명이 없으면 문서 종류와
@@ -393,9 +397,9 @@ def validate_issue(issue: Any, allowed_leads: set[str]) -> list[str]:
                 continue
             role = search.get("role")
             if role not in {
-                "kr_primary",
-                "comparator_primary",
-                "international_or_independent_official",
+                "kr_position_or_discourse",
+                "counter_position_or_discourse",
+                "independent_fact_check",
             }:
                 errors.append("invalid_source_search_role")
             else:
@@ -405,9 +409,9 @@ def validate_issue(issue: Any, allowed_leads: set[str]) -> list[str]:
                 errors.append("invalid_source_jurisdiction")
             elif jurisdiction == "KP":
                 errors.append("blocked_source_jurisdiction")
-            elif role == "kr_primary" and jurisdiction != "KR":
-                errors.append("kr_primary_jurisdiction_mismatch")
-            elif role == "comparator_primary" and jurisdiction == "KR":
+            elif role == "kr_position_or_discourse" and jurisdiction != "KR":
+                errors.append("kr_position_jurisdiction_mismatch")
+            elif role == "counter_position_or_discourse" and jurisdiction == "KR":
                 errors.append("domestic_comparator_jurisdiction")
             for field in (
                 "issuing_authority",
@@ -427,11 +431,23 @@ def validate_issue(issue: Any, allowed_leads: set[str]) -> list[str]:
                 and not localized_search_query(jurisdiction, search_query)
             ):
                 errors.append("unlocalized_source_search_query")
-        if not {"kr_primary", "comparator_primary"} <= roles:
+        if not {"kr_position_or_discourse", "counter_position_or_discourse"} <= roles:
             errors.append("missing_position_search")
     if issue.get("confidence") not in {"high", "medium", "low"}:
         errors.append("invalid_confidence")
     return errors
+
+
+def canonicalize_issue(issue: Any) -> Any:
+    if not isinstance(issue, dict):
+        return issue
+    value = dict(issue)
+    if "why_country_divergent_ko" not in value:
+        for alias in ("why_country_divided_ko", "why_country_divergent"):
+            if isinstance(value.get(alias), str):
+                value["why_country_divergent_ko"] = value.pop(alias)
+                break
+    return value
 
 
 def command_parse(args: argparse.Namespace) -> int:
@@ -469,7 +485,8 @@ def command_parse(args: argparse.Namespace) -> int:
                 "reason": "multiple_issues_for_one_hypothesis",
             })
             continue
-        for issue in issues:
+        for raw_issue in issues:
+            issue = canonicalize_issue(raw_issue)
             errors = validate_issue(issue, set(request["metadata"]["lead_ids"]))
             if errors:
                 rejected.append({
@@ -507,7 +524,7 @@ def command_parse(args: argparse.Namespace) -> int:
                 "comparison_jurisdictions": sorted({
                     plan["jurisdiction"]
                     for plan in issue["source_search_plan"]
-                    if plan["role"] == "comparator_primary"
+                    if plan["role"] == "counter_position_or_discourse"
                 }),
                 "prompt_cue": "none_issue_discovery_stage",
                 **issue,

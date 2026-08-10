@@ -1,0 +1,10 @@
+# Model weights and local training runtimes are not release artifacts.
+checkpoints/
+adapters/
+runs/
+*.safetensors
+*.bin
+*.out
+*.err
+__pycache__/
+*.py[cod]

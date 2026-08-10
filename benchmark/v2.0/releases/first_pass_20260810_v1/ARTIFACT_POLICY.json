@@ -1,0 +1,30 @@
+{
+  "schema_version": "ksova-first-pass-artifact-policy-1.0",
+  "canonical_release": "benchmark/v2.0/releases/first_pass_20260810_v1",
+  "runtime_directory": "benchmark/v2.0/work/runs/first_pass_20260810_v1",
+  "work_current_is_canonical": false,
+  "immutable_benchmark": "benchmark/items.jsonl",
+  "safe_legacy_sft_input": "benchmark/v2.0/work/runs/training_review_reconciliation_250_20260809_v1/examples_accepted_final.jsonl",
+  "superseded_training_runs_do_not_use": [
+    "training_expansion_20260808_wave2",
+    "training_curriculum_20260809_v1",
+    "training_curriculum_backfill_20260809_v1",
+    "training_scaleup_20260809_wave3",
+    "training_review_reconciliation_20260809_v1",
+    "benchmark_x_training_expansion_20260809_v1"
+  ],
+  "superseded_release_artifacts_do_not_use": [
+    "benchmark/evaluation_slice_report.json",
+    "benchmark/primary_items.jsonl",
+    "benchmark/primary_requests.jsonl",
+    "benchmark/secondary_items.jsonl",
+    "benchmark/secondary_requests.jsonl"
+  ],
+  "rules": [
+    "Do not read benchmark/v2.0/work/current through a default path.",
+    "Do not overwrite, move, or delete prior work/runs artifacts.",
+    "Do not train on any benchmark issue_id or benchmark source_id.",
+    "Do not publish raw checkpoints or full model responses to Git.",
+    "Do not use git add -A; stage only manifest-listed release files."
+  ]
+}

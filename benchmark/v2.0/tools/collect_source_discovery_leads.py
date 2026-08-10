@@ -17,6 +17,8 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
+from discover_calibration_sources import duckduckgo_lite_results, naver_results
+
 
 USER_AGENT = "Mozilla/5.0 (compatible; KSOVABenchSourceDiscovery/1.0)"
 KOREA_PATTERN = re.compile(
@@ -150,9 +152,39 @@ def wikipedia_search(query: str, language: str, retries: int) -> list[dict[str, 
     return rows
 
 
+def duckduckgo_web(query: str, _language: str, retries: int) -> list[dict[str, str]]:
+    return [
+        {
+            "title": str(row.get("title") or ""),
+            "url": str(row.get("url") or ""),
+            "snippet": str(row.get("snippet") or ""),
+            "publisher": canonical_host(str(row.get("url") or "")),
+            "published_at": "",
+        }
+        for row in duckduckgo_lite_results(query, max(1, retries + 1))
+        if not row.get("error")
+    ]
+
+
+def naver_web(query: str, _language: str, _retries: int) -> list[dict[str, str]]:
+    return [
+        {
+            "title": str(row.get("title") or ""),
+            "url": str(row.get("url") or ""),
+            "snippet": str(row.get("snippet") or ""),
+            "publisher": canonical_host(str(row.get("url") or "")),
+            "published_at": "",
+        }
+        for row in naver_results(query)
+        if not row.get("error")
+    ]
+
+
 ENGINES = {
     "google_news": google_news,
     "bing_web": bing_web,
+    "duckduckgo_web": duckduckgo_web,
+    "naver_web": naver_web,
     "wikipedia_search": wikipedia_search,
 }
 
@@ -211,7 +243,7 @@ def main() -> int:
 
     tasks: list[tuple[int, dict[str, Any], str]] = []
     for query_index, entry in selected_queries:
-        for engine_name in entry.get("engines") or configured_engines:
+        for engine_name in args.engines or entry.get("engines") or configured_engines:
             if engine_name not in ENGINES:
                 raise ValueError(f"unsupported engine: {engine_name}")
             tasks.append((query_index, entry, engine_name))

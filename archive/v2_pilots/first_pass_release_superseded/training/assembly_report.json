@@ -1,0 +1,49 @@
+{
+  "schema_version": "ksova-staged-training-assembly-report-1.0",
+  "pass": true,
+  "errors": [],
+  "safe_issues": 32,
+  "safe_sources": 48,
+  "benchmark_issue_overlap": 0,
+  "benchmark_source_overlap": 0,
+  "examples": 160,
+  "train_examples": 140,
+  "dev_examples": 20,
+  "train_issues": 28,
+  "dev_issues": 4,
+  "dev_issue_ids": [
+    "KSMAT-3b5b14636142a1",
+    "KSV2-I03-ISSUE-04",
+    "KSV2-I28-ISSUE-04",
+    "KSV2-I31-ISSUE-01"
+  ],
+  "task_counts": {
+    "baseline_and_range": 32,
+    "fact_claim_actor_separation": 32,
+    "final_synthesis": 32,
+    "korean_stake_extraction": 32,
+    "response_discrimination": 32
+  },
+  "phase_file_rows": {
+    "all_examples.jsonl": 160,
+    "train_all.jsonl": 140,
+    "dev_all.jsonl": 20,
+    "phase1_train.jsonl": 56,
+    "phase1_dev.jsonl": 8,
+    "phase2_train.jsonl": 84,
+    "phase2_dev.jsonl": 12,
+    "phase3_train.jsonl": 70,
+    "phase3_dev.jsonl": 10
+  },
+  "artifact_sha256": {
+    "all_examples.jsonl": "990187ac478d25e50d7b14d4d7cd9bf6fa3444ddbf63a69cc3981819d8ac7595",
+    "train_all.jsonl": "77bc61dd793390650d93542675ff1897b7f859b585bb38a33e266f4e73be428c",
+    "dev_all.jsonl": "32f145480510c82d737887751f405ce732105326f0fda4a321db6e5b743524b4",
+    "phase1_train.jsonl": "93f9112a0c42872777380d54114052ddf86b22cad70a46e1c5f266930e2585d9",
+    "phase1_dev.jsonl": "435e98e251e589ffb2b16c09f5773395148b7b74db068076743d4e30784dff09",
+    "phase2_train.jsonl": "c08ca2498fa988b8457cc3f62c0b00761d1f5a2adda3f26d754eacd19688563b",
+    "phase2_dev.jsonl": "7eda73604e6dbcc674dfe5febc09de22de99f1e801569673067b4dfd54866fe5",
+    "phase3_train.jsonl": "58963b740f32d69eb2ba86bfcfe247f953fdd6f004f8bf9bd068158244db6863",
+    "phase3_dev.jsonl": "3f458f79d10e938f45898d72bf6e7ca2a982dc61cccb7f97913b2b05d2010c8e"
+  }
+}

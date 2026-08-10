@@ -33,9 +33,17 @@ def main() -> int:
     parser.add_argument("--outputs", type=Path, required=True)
     parser.add_argument("--expected-model", required=True)
     parser.add_argument("--report", type=Path, required=True)
+    parser.add_argument(
+        "--limit", type=int,
+        help="Validate only the first N frozen requests for a preflight smoke run.",
+    )
     args = parser.parse_args()
 
     requests = read_jsonl(args.requests)
+    if args.limit is not None:
+        if args.limit <= 0:
+            raise ValueError("--limit must be positive")
+        requests = requests[:args.limit]
     outputs = read_jsonl(args.outputs)
     request_by_id = {str(row["id"]): row for row in requests}
     counts = Counter(str(row.get("id")) for row in outputs)

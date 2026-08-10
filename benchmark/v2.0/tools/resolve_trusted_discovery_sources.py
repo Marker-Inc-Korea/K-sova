@@ -270,6 +270,13 @@ def main() -> int:
     parser.add_argument("--report", type=Path, required=True)
     parser.add_argument("--snapshot-dir", type=Path, required=True)
     parser.add_argument("--workers", type=int, default=24)
+    parser.add_argument(
+        "--discourse-mode", action="store_true",
+        help=(
+            "Accept attributed Korean research, constituency, and opinion documents "
+            "as position evidence only; never promote them to factual anchors."
+        ),
+    )
     args = parser.parse_args()
 
     grouped: dict[tuple[str, str], dict[str, Any]] = {}
@@ -311,6 +318,8 @@ def main() -> int:
         jurisdiction, tier = trusted_jurisdiction(base_host(url))
         if tier not in {"A", "B"}:
             return None, "source_policy"
+        if args.discourse_mode and jurisdiction != "KR":
+            return None, "non_korean_discourse"
         discoveries = []
         seen = set()
         for discovery in group["discoveries"]:
@@ -326,13 +335,21 @@ def main() -> int:
             *(str(row.get("query") or "") for row in discoveries),
         ))))
         source_id = "v2lead_" + hashlib.sha256(url.encode("utf-8")).hexdigest()[:16]
+        discourse_categories = sorted({
+            str(row.get("source_variant") or "")
+            for row in discoveries if row.get("source_variant")
+        })
         source = {
             "schema_version": "ksova-v2-calibration-source-1.0",
             "source_id": source_id,
             "title": title,
             "url": url,
             "jurisdiction": jurisdiction,
-            "authority_type": "official_web_document" if tier == "A" else "trusted_secondary_document",
+            "authority_type": (
+                "domestic_public_discourse"
+                if args.discourse_mode else
+                ("official_web_document" if tier == "A" else "trusted_secondary_document")
+            ),
             "issuing_authority": str(record.get("publisher") or domain),
             "section": None,
             "evidence_scope_ko": str(record.get("snippet") or "")[:1000],
@@ -341,11 +358,31 @@ def main() -> int:
             "availability": "search_discovered",
             "origins": ["trusted_discovery_headline_resolution"],
             "reliability_tier": tier,
-            "allowed_uses": ["issue_discovery", "position_evidence", "fact_check", "generation_grounding"],
+            "allowed_uses": (
+                ["issue_discovery", "position_evidence"]
+                if args.discourse_mode else
+                ["issue_discovery", "position_evidence", "fact_check", "generation_grounding"]
+            ),
+            "evidence_policy": (
+                "attributed_position_only_no_unattributed_fact"
+                if args.discourse_mode else "trusted_document"
+            ),
+            "discourse_categories": discourse_categories,
             "required_final_host_suffix": domain,
             "retrieval_context": contexts,
         }
         fetched = fetch_source(source, args.snapshot_dir)
+        if args.discourse_mode:
+            # fetch_source reapplies the generic A/B policy.  Narrow it again so
+            # a discourse document can ground an attributed viewpoint but can
+            # never silently become a factual or legal anchor downstream.
+            fetched = {
+                **fetched,
+                "authority_type": "domestic_public_discourse",
+                "allowed_uses": ["issue_discovery", "position_evidence"],
+                "evidence_policy": "attributed_position_only_no_unattributed_fact",
+                "discourse_categories": discourse_categories,
+            }
         retrieval = fetched.get("retrieval") or {}
         if retrieval.get("status") not in {"fetched", "reused_verified_snapshot"}:
             return None, "fetch_failed"
@@ -356,7 +393,7 @@ def main() -> int:
             return None, "listing_or_section_page"
         if not retrieval.get("relevance_pass"):
             return None, "relevance_failed"
-        if tier == "B" and secondary_unsuitable_for_position(fetched):
+        if tier == "B" and secondary_unsuitable_for_position(fetched) and not args.discourse_mode:
             return None, "secondary_opinion_or_essay"
         return {
             "schema_version": "ksova-v2-trusted-discovery-source-1.0",

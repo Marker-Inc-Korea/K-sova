@@ -1,0 +1,54 @@
+{
+  "schema_version": "ksova-training-source-seal-report-1.0",
+  "created_at": "2026-08-10T03:14:33+09:00",
+  "pass": false,
+  "training_examples": 160,
+  "training_sources": 48,
+  "registry_sources_selected": 48,
+  "status_counts": {
+    "copied_legacy_snapshot": 6,
+    "fetch_failed": 2,
+    "refetched_for_seal": 40
+  },
+  "snapshot_files": 51,
+  "snapshot_bytes": 15785795,
+  "failed_source_ids": [
+    "SRCV2-1A0BF261DDFF9C48",
+    "SRCV2-D7AEB529FDB639B5"
+  ],
+  "inputs": {
+    "examples": {
+      "path": "benchmark/v2.0/releases/first_pass_20260810_v1/training/all_examples.jsonl",
+      "sha256": "990187ac478d25e50d7b14d4d7cd9bf6fa3444ddbf63a69cc3981819d8ac7595"
+    },
+    "registry": {
+      "path": "benchmark/v2.0/work/current/sources/source_registry_1576.jsonl",
+      "sha256": "e541c0f2dcb0faa98d7635acf44a8c773c2dcf27eef4b4411520f4346f9418ec"
+    },
+    "url_overrides": null
+  },
+  "runtime_artifacts": {
+    "source_registry": {
+      "path": "benchmark/v2.0/work/runs/first_pass_20260810_v1/training/source_provenance/source_registry.jsonl",
+      "rows": 48,
+      "sha256": "91b822761f38a9c258ede8c1e5d1c66c11d54ef309f515071cbf59e1eb5b590b"
+    },
+    "snapshot_manifest": {
+      "path": "benchmark/v2.0/work/runs/first_pass_20260810_v1/training/source_provenance/snapshot_manifest.jsonl",
+      "rows": 48,
+      "sha256": "a546890e26c6a67d30198e4261f45a14726671b326f87fa2a7871651b8194971"
+    },
+    "raw_snapshot_directory": "benchmark/v2.0/work/runs/first_pass_20260810_v1/training/source_provenance/raw_snapshots",
+    "source_seal_report": {
+      "path": "benchmark/v2.0/work/runs/first_pass_20260810_v1/training/source_provenance/source_seal_report.json",
+      "sha256": "9d609f33ee95453216035be507fd116fbe9c224444e81d2f26110d922a35ff12"
+    }
+  },
+  "policy": {
+    "implicit_work_current_lookup": false,
+    "network_attempts_per_missing_source": 1,
+    "transport_fallback_attempts_max": 1,
+    "raw_snapshots_git_published": false,
+    "legacy_refetch_is_retroactive_provenance": false
+  }
+}

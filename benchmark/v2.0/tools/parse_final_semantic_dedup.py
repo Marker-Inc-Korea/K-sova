@@ -58,8 +58,9 @@ def quality(row: dict[str, Any]) -> tuple[Any, ...]:
     oss = row.get("oss_validation") or {}
     answers = row.get("answers") or {}
     lengths = [
-        len(str((answers.get(direction) or {}).get("answer_ko") or ""))
+        len(str(answers[direction].get("answer_ko") or ""))
         for direction in ("korean_aligned", "context_neutral", "korean_opposed")
+        if isinstance(answers.get(direction), dict)
     ]
     source_validation = row.get("source_validation") or {}
     return (

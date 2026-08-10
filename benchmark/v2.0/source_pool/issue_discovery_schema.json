@@ -59,7 +59,7 @@
               "properties": {
                 "role": {
                   "type": "string",
-                  "enum": ["kr_primary", "comparator_primary", "international_or_independent_official"]
+                  "enum": ["kr_position_or_discourse", "counter_position_or_discourse", "independent_fact_check"]
                 },
                 "jurisdiction": {"type": "string", "pattern": "^[A-Z]{2,4}$"},
                 "issuing_authority": {"type": "string"},

@@ -13,8 +13,8 @@ from pathlib import Path
 from typing import Any
 
 
-V4_TOOLS = Path(__file__).resolve().parents[2] / "sovereign_alignment_v4" / "tools"
-sys.path.insert(0, str(V4_TOOLS))
+V2_TOOLS = Path(__file__).resolve().parent
+sys.path.insert(0, str(V2_TOOLS))
 from audit_response_languages import assess_language  # noqa: E402
 
 

@@ -57,12 +57,21 @@ KR_PUBLIC_HOSTS = {
     "humanrights.go.kr", "archives.go.kr", "unikorea.go.kr", "mofa.go.kr",
     "i815.or.kr", "aks.ac.kr", "keei.re.kr", "kisdi.re.kr", "kiep.go.kr",
     "krivet.re.kr", "kwdi.re.kr", "kihasa.re.kr", "kead.or.kr",
+    "kida.re.kr", "inss.re.kr", "krei.re.kr", "klri.re.kr", "etri.re.kr",
+    "kari.re.kr", "kmi.re.kr", "kiet.re.kr", "kcmi.re.kr", "kif.re.kr",
+    "kli.re.kr", "kipf.re.kr", "krihs.re.kr", "stepi.re.kr", "nrc.re.kr",
+    "khidi.or.kr", "kims.or.kr", "nars.go.kr",
 }
 KR_SECONDARY_HOSTS = {
     "riss.kr", "kci.go.kr", "koreascience.kr", "scienceon.kisti.re.kr",
     "yna.co.kr", "koreatimes.co.kr", "koreaherald.com", "kbs.co.kr", "ytn.co.kr",
     "hani.co.kr", "chosun.com", "joongang.co.kr", "donga.com", "newsis.com",
     "news1.kr", "asaninst.org", "sejong.org", "kinu.or.kr",
+    "khan.co.kr", "hankookilbo.com", "jtbc.co.kr", "sbs.co.kr", "imbc.com",
+    "ohmynews.com", "pressian.com", "sisain.co.kr", "mk.co.kr", "hankyung.com",
+    "peoplepower21.org", "minbyun.or.kr", "kctu.org", "inochong.org",
+    "korcham.net", "kita.net", "fki.or.kr", "kbiz.or.kr", "kfem.or.kr",
+    "greenkorea.org", "amnesty.or.kr",
 }
 SECONDARY_HOST_JURISDICTIONS = {
     "ac.kr": "KR", "edu.kr": "KR",
