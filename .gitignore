@@ -9,3 +9,8 @@ slurm-*.out
 slurm-*.err
 benchmark/slurm_logs/
 ksova_next/outputs/
+
+# Transient directories used for atomic canonical-data promotion.
+/data/.staging/
+/data/.previous/
+/data/work/

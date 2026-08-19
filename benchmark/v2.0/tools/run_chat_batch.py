@@ -8,6 +8,7 @@ import concurrent.futures
 import datetime as dt
 import hashlib
 import json
+import os
 import time
 import urllib.error
 import urllib.request
@@ -156,10 +157,23 @@ def reusable_result(
             if key != "max_tokens"
         }
         previous_limit = result.get("requested_max_tokens")
+        usage = result.get("usage") or {}
+        completion_tokens = usage.get("completion_tokens")
+        limit_compatible = bool(
+            isinstance(previous_limit, int)
+            and isinstance(requested_max_tokens, int)
+            and (
+                previous_limit <= requested_max_tokens
+                or (
+                    isinstance(completion_tokens, int)
+                    and completion_tokens <= requested_max_tokens
+                )
+            )
+        )
         same_generation_config = all((
             isinstance(previous_limit, int),
             isinstance(requested_max_tokens, int),
-            previous_limit <= requested_max_tokens,
+            limit_compatible,
             previous_generation_config.get("max_tokens") == previous_limit,
             generation_config.get("max_tokens") == requested_max_tokens,
             previous_without_limit == current_without_limit,
@@ -225,30 +239,29 @@ def main() -> int:
     else:
         stamp = dt.datetime.now().strftime("%Y%m%d_%H%M%S")
         out_path = args.out_dir / f"{args.out_prefix}_{stamp}.jsonl"
+    progress_path = out_path.with_suffix(out_path.suffix + ".progress")
+    if not args.resume:
+        progress_path.unlink(missing_ok=True)
     reusable: dict[str, dict[str, Any]] = {}
-    if args.resume and out_path.exists():
-        previous = load_jsonl(out_path)
-        counts: dict[str, int] = {}
-        for result in previous:
-            result_id = str(result.get("id"))
-            counts[result_id] = counts.get(result_id, 0) + 1
+    if args.resume:
+        previous: list[dict[str, Any]] = []
+        if out_path.exists():
+            previous.extend(load_jsonl(out_path))
+        if progress_path.exists():
+            previous.extend(load_jsonl(progress_path))
         row_by_id = {str(row.get("id")): row for row in rows}
         for result in previous:
             result_id = str(result.get("id"))
             row = row_by_id.get(result_id)
-            if row is not None and counts[result_id] == 1 and reusable_result(
+            if row is not None and reusable_result(
                 result, row, args, template_kwargs, extra
             ):
                 reusable[result_id] = result
     pending = [row for row in rows if str(row.get("id")) not in reusable]
     completed = len(reusable)
-    errors = 0
-    with out_path.open("w", encoding="utf-8") as handle:
-        for row in rows:
-            result = reusable.get(str(row.get("id")))
-            if result is not None:
-                handle.write(json.dumps(result, ensure_ascii=False) + "\n")
-        handle.flush()
+    result_by_id = dict(reusable)
+    progress_path.parent.mkdir(parents=True, exist_ok=True)
+    with progress_path.open("a", encoding="utf-8") as journal:
         if reusable:
             print(f"[resume {len(reusable)}/{len(rows)}] verified reusable responses", flush=True)
         with concurrent.futures.ThreadPoolExecutor(max_workers=args.concurrency) as pool:
@@ -258,18 +271,40 @@ def main() -> int:
             }
             for future in concurrent.futures.as_completed(futures):
                 result = future.result()
-                handle.write(json.dumps(result, ensure_ascii=False) + "\n")
-                handle.flush()
+                journal.write(json.dumps(result, ensure_ascii=False) + "\n")
+                journal.flush()
+                os.fsync(journal.fileno())
+                result_by_id[str(result["id"])] = result
                 completed += 1
-                errors += int(bool(result.get("error")))
                 print(f"[{completed}/{len(rows)}] {result['id']} error={bool(result.get('error'))}", flush=True)
+    final_rows = [
+        result_by_id[str(row["id"])]
+        for row in rows
+        if str(row["id"]) in result_by_id
+    ]
+    temporary = out_path.with_suffix(out_path.suffix + ".tmp")
+    with temporary.open("w", encoding="utf-8") as handle:
+        for result in final_rows:
+            handle.write(json.dumps(result, ensure_ascii=False) + "\n")
+        handle.flush()
+        os.fsync(handle.fileno())
+    os.replace(temporary, out_path)
+    errors = sum(bool(result.get("error")) for result in final_rows)
+    incomplete = sum(
+        not result.get("error")
+        and str(result.get("finish_reason") or "").casefold() != "stop"
+        for result in final_rows
+    )
+    if len(final_rows) == len(rows) and not errors and not incomplete:
+        progress_path.unlink(missing_ok=True)
     summary = {
-        "output": str(out_path), "requests": len(rows), "completed": completed,
+        "output": str(out_path), "requests": len(rows), "completed": len(final_rows),
         "resumed": len(reusable), "generated": len(pending), "errors": errors,
+        "incomplete": incomplete,
     }
     out_path.with_suffix(".summary.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(summary))
-    return 1 if errors else 0
+    return 1 if errors or incomplete else 0
 
 
 if __name__ == "__main__":

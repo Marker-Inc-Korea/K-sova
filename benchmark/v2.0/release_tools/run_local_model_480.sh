@@ -155,7 +155,17 @@ if [[ -n "${CHAT_KWARGS}" ]]; then
   runner+=(--chat-template-kwargs-json "${CHAT_KWARGS}")
 fi
 if [[ "${REQUEST_LIMIT}" -gt 0 ]]; then runner+=(--limit "${REQUEST_LIMIT}"); fi
+# The batch runner returns a non-zero status when otherwise valid outputs end
+# at the shared token cap.  Let the fail-closed target validator decide whether
+# the complete file is promotable; missing, empty, or errored rows still fail
+# validation below.
+set +e
 "${runner[@]}"
+RUNNER_STATUS=$?
+set -e
+if [[ "${RUNNER_STATUS}" -ne 0 ]]; then
+  echo "batch runner status=${RUNNER_STATUS}; validating partial output" >&2
+fi
 
 validation=(
   "${CLIENT_ENV}/bin/python" -B

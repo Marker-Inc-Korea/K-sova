@@ -1,0 +1,156 @@
+{
+  "benchmark": {
+    "issues": 250,
+    "items": 480,
+    "items_sha256": "0ca49e7bc94178300c0309919d63a51c0496d84d6e352501d350f0deac494032"
+  },
+  "candidate_issues": 79,
+  "data_current_hashes_after": {
+    "benchmark_items.jsonl": "e559437a531d3c154c052a038a979b7c67709ca60e6f30b13b85f18fd2c38b90",
+    "issues.jsonl": "97dfdb057d0967fe267ac92a409dc85dc09e129299e223a33baad78d84e24e13",
+    "manifest.json": "a76aa8cb7a20e287c0e3c24dc83ddd99d227c4261586c9a8303bc9f6dda50e21",
+    "sources.jsonl": "d77c9a5edd7035461f1a88615daecc4829688672e47aed0eb3c06ff34ec671bd",
+    "train_examples.jsonl": "164e419f67ace0febce3a9d60b7b3666388908534b0964d7c86a38e2bd62c01c"
+  },
+  "data_current_hashes_before": {
+    "benchmark_items.jsonl": "e559437a531d3c154c052a038a979b7c67709ca60e6f30b13b85f18fd2c38b90",
+    "issues.jsonl": "97dfdb057d0967fe267ac92a409dc85dc09e129299e223a33baad78d84e24e13",
+    "manifest.json": "a76aa8cb7a20e287c0e3c24dc83ddd99d227c4261586c9a8303bc9f6dda50e21",
+    "sources.jsonl": "d77c9a5edd7035461f1a88615daecc4829688672e47aed0eb3c06ff34ec671bd",
+    "train_examples.jsonl": "164e419f67ace0febce3a9d60b7b3666388908534b0964d7c86a38e2bd62c01c"
+  },
+  "data_current_mutated": false,
+  "dev_domain_issue_counts": {
+    "D02": 1,
+    "D03": 1,
+    "D06": 2,
+    "D07": 4
+  },
+  "dev_examples": 80,
+  "dev_issue_ids": [
+    "KSISSUE-EXP-129b143b7a3bed2b",
+    "KSISSUE-EXP-377fee6ba721f497",
+    "KSISSUE-EXP-4d9d2db36124359d",
+    "KSISSUE-EXP-5e5e34996925926a",
+    "KSISSUE-EXP-7e161ab683bddab5",
+    "KSISSUE-EXP-bb281904316a2cbc",
+    "KSISSUE-EXP-cdb8e236a7da8bd7",
+    "KSISSUE-EXP-fa1d90bfc74844e4"
+  ],
+  "dev_issues": 8,
+  "domain_issue_counts": {
+    "D01": 1,
+    "D02": 11,
+    "D03": 4,
+    "D04": 4,
+    "D05": 2,
+    "D06": 20,
+    "D07": 35,
+    "D08": 2
+  },
+  "examples": 782,
+  "experiment_id": "recommended_new_782_20260814",
+  "input_files": {
+    "accepted": {
+      "path": "data/work/dual_candidate_20260813/training_validation_accepted.jsonl",
+      "sha256": "86c73439cd247ac8b44e4115bb1c5a8c63064321396d5081bd594b3478da7dc1"
+    },
+    "benchmark_items": {
+      "path": "benchmark/v2.0/releases/first_pass_20260810_v1/benchmark/items.jsonl",
+      "sha256": "0ca49e7bc94178300c0309919d63a51c0496d84d6e352501d350f0deac494032"
+    },
+    "dossiers": {
+      "path": "data/work/dual_candidate_20260813/training_dossiers.jsonl",
+      "sha256": "e026325305a922b6a38a509eca428f405773d5dc32e747c6056f251ddc28e31a"
+    },
+    "recommendations": {
+      "path": "data/work/dual_candidate_20260813/portfolio_recommendations.jsonl",
+      "sha256": "930cbb95ea9c474d21454dfadada012f45ba1a4fd842ef9480618fc4b8bac2f5"
+    },
+    "sources": {
+      "path": "data/current/sources.jsonl",
+      "sha256": "d77c9a5edd7035461f1a88615daecc4829688672e47aed0eb3c06ff34ec671bd"
+    }
+  },
+  "isolation_audit": {
+    "content_sha256_overlap": 0,
+    "exact_prompt_overlap": 0,
+    "issue_id_overlap": 0,
+    "normalized_url_overlap": 0,
+    "source_id_overlap": 0,
+    "train_dev_issue_overlap": 0
+  },
+  "output_files": {
+    "all_examples.jsonl": {
+      "rows": 782,
+      "sha256": "bd87bf8fd59d41c60f8501582f3307216a2ed55cb2a92e94ae1b557374358a85"
+    },
+    "dev_all.jsonl": {
+      "rows": 80,
+      "sha256": "a0d72e3b1bebf70d01d9eb6988e1c0d8714aa10e1e50ca0e28e3e0870903d6a9"
+    },
+    "phase1_dev.jsonl": {
+      "rows": 24,
+      "sha256": "0fb2a0bdc597f7e9ca9b3528166dee71456b5d1e50ec11e9c44920adf5253589"
+    },
+    "phase1_train.jsonl": {
+      "rows": 211,
+      "sha256": "149e88f8e848f9d438a7d028b0a224531fad7bba627f37088c20eb40e7d31837"
+    },
+    "phase2_dev.jsonl": {
+      "rows": 32,
+      "sha256": "01cdc57dd956c7064da3cec2defbe91e772779ea61617cdcb637689d6b0a4d41"
+    },
+    "phase2_train.jsonl": {
+      "rows": 282,
+      "sha256": "0035738d56453790984ee5ff30ba743fddc517e3c11811a228a19d94657d85a4"
+    },
+    "phase3_dev.jsonl": {
+      "rows": 24,
+      "sha256": "09c8c80b589f19172c20acb343311c88cc90157c147e1b4914f726b511d8aff9"
+    },
+    "phase3_train.jsonl": {
+      "rows": 209,
+      "sha256": "e0d664052fc70e3c42592330da3f7571a8d9251d773fcf1514205e4b388fd940"
+    },
+    "train_all.jsonl": {
+      "rows": 702,
+      "sha256": "194d575f53f05cf21c83ad7e3ec7ddc681c7d27eb2b1e70d4c663633fb30b266"
+    }
+  },
+  "phase_counts": {
+    "phase1_foundation": 235,
+    "phase2_application": 314,
+    "phase3_synthesis": 233
+  },
+  "phase_split_counts": {
+    "phase1_foundation": {
+      "dev": 24,
+      "train": 211
+    },
+    "phase2_application": {
+      "dev": 32,
+      "train": 282
+    },
+    "phase3_synthesis": {
+      "dev": 24,
+      "train": 209
+    }
+  },
+  "portfolio_route": "training_candidate",
+  "schema_version": "ksova-materialized-training-experiment-1.0",
+  "task_counts": {
+    "actor_decision_application": 79,
+    "baseline_and_range": 79,
+    "competing_claim_resolution": 77,
+    "fact_claim_actor_separation": 77,
+    "final_synthesis_claim_review": 78,
+    "final_synthesis_neutral": 77,
+    "final_synthesis_policy_comparison": 78,
+    "frame_adversarial_resistance": 79,
+    "korean_stake_extraction": 79,
+    "uncertainty_consequence_boundary": 79
+  },
+  "train_examples": 702,
+  "train_issues": 71
+}

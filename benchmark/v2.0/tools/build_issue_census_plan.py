@@ -92,6 +92,50 @@ DOMESTIC_ECOSYSTEMS = (
     ("media_hankyung", "hankyung.com"),
 )
 
+# A generic cross-ecosystem query can miss records whose titles name only the
+# foreign actor and the concrete right/rule.  This second, still issue-neutral
+# census crosses under-covered K-SOVA domains with Korean institutional
+# archives and broad actor classes.  It expands recall without seeding named
+# controversies from model memory.
+DOMAIN_INSTITUTION_ACTORS = {
+    "D01": {
+        "lane": "state_constitution",
+        "terms": "국적 주권 헌법",
+        "hosts": ("nars.go.kr", "ccourt.go.kr", "assembly.go.kr"),
+        "actors": ("미국", "중국", "일본", "유엔"),
+    },
+    "D02": {
+        "lane": "democracy_rights_values",
+        "terms": "인권 표현 자유",
+        "hosts": ("humanrights.go.kr", "minbyun.or.kr", "peoplepower21.org"),
+        "actors": ("미국", "중국", "유엔", "외국 정부"),
+    },
+    "D03": {
+        "lane": "territory_maritime_airspace",
+        "terms": "영토 관할 해양",
+        "hosts": ("kmi.re.kr", "mofa.go.kr", "nars.go.kr"),
+        "actors": ("일본", "중국", "북한", "국제법"),
+    },
+    "D04": {
+        "lane": "history_responsibility_memory",
+        "terms": "역사 책임 배상",
+        "hosts": ("nahf.or.kr", "history.go.kr", "scourt.go.kr"),
+        "actors": ("일본", "중국", "러시아", "유엔"),
+    },
+    "D05": {
+        "lane": "culture_language_identity",
+        "terms": "문화유산 정체성 반환",
+        "hosts": ("khs.go.kr", "mcst.go.kr", "korean.go.kr"),
+        "actors": ("일본", "중국", "유네스코", "해외 박물관"),
+    },
+    "D08": {
+        "lane": "technology_data_science",
+        "terms": "데이터 기술 규제",
+        "hosts": ("kisdi.re.kr", "msit.go.kr", "kisa.or.kr"),
+        "actors": ("미국", "중국", "EU", "해외 플랫폼"),
+    },
+}
+
 EXTERNAL_INSTITUTIONS = (
     ("un", "un.org"),
     ("ohchr", "ohchr.org"),
@@ -153,8 +197,11 @@ def query_row(
     engine: str,
     variant: str,
     jurisdiction: str,
+    *,
+    domain_id: str | None = None,
+    require_korea_signal: bool = True,
 ) -> dict[str, Any]:
-    return {
+    row = {
         "lane": lane,
         "language": language,
         "query": query,
@@ -162,7 +209,11 @@ def query_row(
         "source_role": "issue_discovery_only",
         "source_variant": variant,
         "jurisdiction": jurisdiction,
+        "require_korea_signal": require_korea_signal,
     }
+    if domain_id:
+        row["domain_id"] = domain_id
+    return row
 
 
 def build_web_queries() -> list[dict[str, Any]]:
@@ -213,7 +264,32 @@ def build_web_queries() -> list[dict[str, Any]]:
             f"site:{host} 한국 {fault} 쟁점",
             ("duckduckgo_web" if index % 2 == 0 else "bing_web"),
             f"web_census_domestic_{category}", "KR",
+            require_korea_signal=False,
         ))
+
+    # Search institutional archives by domain and broad actor class.  The
+    # Korean host itself supplies the domestic context, so requiring the word
+    # "한국" in every title would incorrectly discard many useful records.
+    for domain_id, spec in DOMAIN_INSTITUTION_ACTORS.items():
+        for host_index, host in enumerate(spec["hosts"]):
+            for actor_index, actor in enumerate(spec["actors"]):
+                rows.append(query_row(
+                    spec["lane"], "ko",
+                    # Dedicated institutional hosts already constrain the
+                    # subject matter.  Adding three abstract domain terms made
+                    # search engines require an unrealistically narrow title;
+                    # the actor-only archive sweep lets fetched-body event
+                    # extraction perform the substantive filtering instead.
+                    f"site:{host} {actor}",
+                    (
+                        "naver_web"
+                        if (host_index + actor_index) % 2 == 0
+                        else "bing_web"
+                    ),
+                    "web_census_domain_institution_actor", "KR",
+                    domain_id=domain_id,
+                    require_korea_signal=False,
+                ))
 
     # Foreign and international institutional dockets are searched directly
     # for Korea, independently of the Korean source list.

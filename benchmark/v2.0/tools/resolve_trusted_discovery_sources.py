@@ -7,10 +7,11 @@ import argparse
 import concurrent.futures
 import hashlib
 import json
+import os
 import re
+import subprocess
 import time
 import urllib.parse
-import urllib.request
 from collections import Counter
 from pathlib import Path
 from typing import Any
@@ -18,16 +19,80 @@ from typing import Any
 from discover_calibration_sources import (
     base_host,
     bing_rss_results,
+    duckduckgo_lite_results,
     fetch_source,
     host_matches,
     likely_homepage,
     normalized,
+    search_results,
     text_score,
     trusted_jurisdiction,
 )
 
 
 PUBLISHER_DOMAINS = (
+    ("대한민국 정책브리핑", "korea.kr"),
+    ("정책브리핑", "korea.kr"),
+    ("국회입법조사처", "nars.go.kr"),
+    ("국가인권위원회", "humanrights.go.kr"),
+    ("한국무역협회", "kita.net"),
+    ("kita.net", "kita.net"),
+    ("대외경제정책연구원", "kiep.go.kr"),
+    ("kiep", "kiep.go.kr"),
+    ("정보통신정책연구원", "kisdi.re.kr"),
+    ("kisdi", "kisdi.re.kr"),
+    ("한국인터넷진흥원", "kisa.or.kr"),
+    ("국가안보전략연구원", "inss.re.kr"),
+    ("통일연구원", "kinu.or.kr"),
+    ("kinu", "kinu.or.kr"),
+    ("한국해양수산개발원", "kmi.re.kr"),
+    ("kmi.re.kr", "kmi.re.kr"),
+    ("한국국방연구원", "kida.re.kr"),
+    ("kida", "kida.re.kr"),
+    ("한국군사문제연구원", "kima.re.kr"),
+    ("kima", "kima.re.kr"),
+    ("한국사데이터베이스", "db.history.go.kr"),
+    ("우리역사넷", "contents.history.go.kr"),
+    ("문화체육관광부", "mcst.go.kr"),
+    ("국립국어원", "korean.go.kr"),
+    ("대한민국 법원", "scourt.go.kr"),
+    ("헌법재판소", "ccourt.go.kr"),
+    ("외교부", "mofa.go.kr"),
+    ("mofa.go.kr", "mofa.go.kr"),
+    ("congress.gov", "congress.gov"),
+    ("european parliament", "europarl.europa.eu"),
+    ("european commission", "ec.europa.eu"),
+    ("voa 한국어", "voakorea.com"),
+    ("연합뉴스tv", "yonhapnewstv.co.kr"),
+    ("한국일보", "hankookilbo.com"),
+    ("경향신문", "khan.co.kr"),
+    ("동아일보", "donga.com"),
+    ("서울신문", "seoul.co.kr"),
+    ("매일경제", "mk.co.kr"),
+    ("한국경제", "hankyung.com"),
+    ("머니투데이", "mt.co.kr"),
+    ("서울경제", "sedaily.com"),
+    ("이데일리", "edaily.co.kr"),
+    ("세계일보", "segye.com"),
+    ("국민일보", "kmib.co.kr"),
+    ("문화일보", "munhwa.com"),
+    ("헤럴드경제", "heraldcorp.com"),
+    ("노컷뉴스", "nocutnews.co.kr"),
+    ("전자신문", "etnews.com"),
+    ("ZDNET Korea", "zdnet.co.kr"),
+    ("지디넷코리아", "zdnet.co.kr"),
+    ("법률신문", "lawtimes.co.kr"),
+    ("조세일보", "joseilbo.com"),
+    ("한국농어민신문", "agrinet.co.kr"),
+    ("부산일보", "busan.com"),
+    ("뉴시스", "newsis.com"),
+    ("뉴스1", "news1.kr"),
+    ("ytn", "ytn.co.kr"),
+    ("sbs", "sbs.co.kr"),
+    ("mbc", "imbc.com"),
+    ("mbn", "mbn.co.kr"),
+    ("채널a", "ichannela.com"),
+    ("channel a", "ichannela.com"),
     ("the korea times", "koreatimes.co.kr"),
     ("korea times", "koreatimes.co.kr"),
     ("the diplomat", "thediplomat.com"),
@@ -148,12 +213,37 @@ def decode_google_news_url(url: str, retries: int = 2) -> str | None:
     last_error: Exception | None = None
     for attempt in range(retries + 1):
         try:
-            parameter_request = urllib.request.Request(
-                f"https://news.google.com/rss/articles/{article_id}",
-                headers={"User-Agent": USER_AGENT},
+            proxy = os.environ.get("KSOVA_GOOGLE_NEWS_PROXY", "").strip()
+            common = [
+                "curl", "--location", "--fail", "--silent", "--show-error",
+                "--max-time", "20", "--user-agent", USER_AGENT,
+            ]
+            if proxy:
+                common.extend(("--proxy", proxy))
+            # Google News RSS tokens currently expose their decode metadata on
+            # the original ``/rss/articles/`` route.  Rewriting those links to
+            # the older ``/articles/`` route can return a bot-check page with
+            # no signature fields, making every otherwise valid lead look
+            # unresolved.  Preserve the route family supplied by the feed.
+            article_route = (
+                "/rss/articles/" if "/rss/articles/" in parsed.path
+                else "/articles/"
             )
-            with urllib.request.urlopen(parameter_request, timeout=30) as response:
-                html = response.read().decode("utf-8", "replace")
+            parameter_url = (
+                f"https://news.google.com{article_route}{article_id}"
+                "?hl=en-US&gl=US&ceid=US:en"
+            )
+            parameter_process = subprocess.run(
+                [*common, parameter_url],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                timeout=25,
+            )
+            if parameter_process.returncode != 0:
+                raise RuntimeError(
+                    parameter_process.stderr.decode("utf-8", "replace").strip()
+                )
+            html = parameter_process.stdout.decode("utf-8", "replace")
             timestamp_match = re.search(r'data-n-a-ts="([0-9]+)"', html)
             signature_match = re.search(r'data-n-a-sg="([A-Za-z0-9_-]+)"', html)
             if not timestamp_match or not signature_match:
@@ -179,16 +269,23 @@ def decode_google_news_url(url: str, retries: int = 2) -> str | None:
             body = urllib.parse.urlencode({
                 "f.req": json.dumps(batch, separators=(",", ":")),
             }).encode("utf-8")
-            decode_request = urllib.request.Request(
-                "https://news.google.com/_/DotsSplashUi/data/batchexecute",
-                data=body,
-                headers={
-                    "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-                    "User-Agent": USER_AGENT,
-                },
+            decode_process = subprocess.run(
+                [
+                    *common,
+                    "--header", "Content-Type: application/x-www-form-urlencoded;charset=UTF-8",
+                    "--data-binary", "@-",
+                    "https://news.google.com/_/DotsSplashUi/data/batchexecute",
+                ],
+                input=body,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                timeout=25,
             )
-            with urllib.request.urlopen(decode_request, timeout=30) as response:
-                payload_text = response.read().decode("utf-8", "replace")
+            if decode_process.returncode != 0:
+                raise RuntimeError(
+                    decode_process.stderr.decode("utf-8", "replace").strip()
+                )
+            payload_text = decode_process.stdout.decode("utf-8", "replace")
             for chunk in payload_text.split("\n\n"):
                 try:
                     payload = json.loads(chunk)
@@ -241,7 +338,22 @@ def resolve_url(record: dict[str, Any], domain: str) -> tuple[str | None, str | 
             return decoded_url, str(record.get("title") or ""), "google_news_decode"
         decode_outcome = "decoded_host_mismatch" if decoded_url else "google_news_decode_failed"
     title = clean_title(str(record.get("title") or ""), str(record.get("publisher") or ""))
-    results = bing_rss_results(f"site:{domain} {title}")
+    query = f"site:{domain} {title}"
+    # Yahoo Japan resolves Korean quoted titles reliably and returns ordinary
+    # publisher URLs. DDG and Bing remain fallbacks for gaps in its index.
+    results = search_results(query, retries=1)
+    if not any(
+        not result.get("error")
+        and host_matches(base_host(str(result.get("url") or "")), domain)
+        for result in results
+    ):
+        results.extend(duckduckgo_lite_results(query, retries=1))
+    if not any(
+        not result.get("error")
+        and host_matches(base_host(str(result.get("url") or "")), domain)
+        for result in results
+    ):
+        results.extend(bing_rss_results(query))
     ranked = []
     for result in results:
         if result.get("error"):

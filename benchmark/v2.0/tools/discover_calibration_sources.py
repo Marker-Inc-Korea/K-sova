@@ -8,7 +8,9 @@ import concurrent.futures
 import hashlib
 import html
 import http.client
+import http.cookiejar
 import json
+import os
 import re
 import subprocess
 import tempfile
@@ -47,7 +49,7 @@ INTERNATIONAL_HOSTS = {
 BLOCKED_HOST_SUFFIXES = {"kp"}
 ALLOWED_CONTENT_TYPES = {
     "text/html", "application/xhtml+xml", "application/pdf", "text/plain",
-    "application/xml", "text/xml",
+    "application/xml", "text/xml", "application/json",
 }
 KR_PUBLIC_HOSTS = {
     "history.go.kr", "nahf.or.kr", "korean.go.kr", "bok.or.kr", "kdi.re.kr",
@@ -66,9 +68,14 @@ KR_SECONDARY_HOSTS = {
     "riss.kr", "kci.go.kr", "koreascience.kr", "scienceon.kisti.re.kr",
     "yna.co.kr", "koreatimes.co.kr", "koreaherald.com", "kbs.co.kr", "ytn.co.kr",
     "hani.co.kr", "chosun.com", "joongang.co.kr", "donga.com", "newsis.com",
-    "news1.kr", "asaninst.org", "sejong.org", "kinu.or.kr",
+    "news1.kr", "asaninst.org", "sejong.org", "kinu.or.kr", "kima.re.kr",
     "khan.co.kr", "hankookilbo.com", "jtbc.co.kr", "sbs.co.kr", "imbc.com",
+    "mbn.co.kr", "ichannela.com",
     "ohmynews.com", "pressian.com", "sisain.co.kr", "mk.co.kr", "hankyung.com",
+    "mt.co.kr", "sedaily.com", "edaily.co.kr", "seoul.co.kr", "segye.com",
+    "kmib.co.kr", "munhwa.com", "heraldcorp.com", "nocutnews.co.kr",
+    "etnews.com", "zdnet.co.kr", "lawtimes.co.kr", "joseilbo.com",
+    "agrinet.co.kr", "busan.com",
     "peoplepower21.org", "minbyun.or.kr", "kctu.org", "inochong.org",
     "korcham.net", "kita.net", "fki.or.kr", "kbiz.or.kr", "kfem.or.kr",
     "greenkorea.org", "amnesty.or.kr",
@@ -122,8 +129,28 @@ def text_score(left: str, right: str) -> float:
 
 
 def source_relevance(text: str, contexts: list[str]) -> dict[str, Any]:
+    clean_contexts = list(dict.fromkeys(
+        re.sub(r"\s+", " ", str(value)).strip()
+        for value in contexts if str(value).strip()
+    ))
+    if len(clean_contexts) > 1:
+        assessments = [source_relevance(text, [value]) for value in clean_contexts]
+        selected_index, best = max(
+            enumerate(assessments),
+            key=lambda item: (
+                bool(item[1]["passed"]),
+                len(item[1]["best_proximity_cluster"]),
+                len(item[1]["matched_terms"]),
+                -item[0],
+            ),
+        )
+        return {
+            **best,
+            "evaluated_context_count": len(clean_contexts),
+            "selected_context_index": selected_index,
+        }
     folded = text.casefold()
-    anchor_contexts = contexts[-2:] if len(contexts) >= 2 else contexts
+    anchor_contexts = clean_contexts
     raw_terms = tokens(" ".join(anchor_contexts))
     terms = set()
     for raw in raw_terms:
@@ -397,9 +424,27 @@ def duckduckgo_lite_results(query: str, retries: int = 1) -> list[dict[str, str]
     last_error = None
     for attempt in range(retries):
         try:
-            request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-            with urllib.request.urlopen(request, timeout=15) as response:
-                body = response.read().decode("utf-8", errors="replace")
+            proxy = os.environ.get("KSOVA_SEARCH_PROXY", "").strip()
+            if proxy:
+                process = subprocess.run(
+                    [
+                        "curl", "--location", "--fail", "--silent", "--show-error",
+                        "--max-time", "15", "--user-agent", USER_AGENT,
+                        "--proxy", proxy, url,
+                    ],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    timeout=20,
+                )
+                if process.returncode != 0:
+                    raise RuntimeError(
+                        process.stderr.decode("utf-8", errors="replace").strip()
+                    )
+                body = process.stdout.decode("utf-8", errors="replace")
+            else:
+                request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+                with urllib.request.urlopen(request, timeout=15) as response:
+                    body = response.read().decode("utf-8", errors="replace")
             soup = BeautifulSoup(body, "html.parser")
             found = []
             seen = set()
@@ -432,23 +477,33 @@ def duckduckgo_lite_results(query: str, retries: int = 1) -> list[dict[str, str]
             return []
         except (
             urllib.error.URLError, urllib.error.HTTPError, TimeoutError,
-            http.client.HTTPException, ConnectionError, OSError,
+            http.client.HTTPException, ConnectionError, OSError, RuntimeError,
         ) as exc:
             last_error = exc
         time.sleep(1.2 * (attempt + 1))
     return [{"error": f"{type(last_error).__name__}: {last_error}"}] if last_error else []
 
 
-def naver_results(query: str) -> list[dict[str, str]]:
-    url = "https://search.naver.com/search.naver?" + urllib.parse.urlencode(
-        {"where": "web", "query": query}
-    )
+def naver_results(
+    query: str, start: int = 1, where: str = "web"
+) -> list[dict[str, str]]:
+    if where not in {"web", "news"}:
+        raise ValueError(f"unsupported Naver search vertical: {where}")
+    params = {"where": where, "query": query}
+    if start > 1:
+        params["start"] = str(start)
+    url = "https://search.naver.com/search.naver?" + urllib.parse.urlencode(params)
     try:
+        curl_args = [
+            "curl", "--location", "--fail", "--silent", "--show-error",
+            "--max-time", "15", "--user-agent", USER_AGENT,
+        ]
+        proxy = os.environ.get("KSOVA_SEARCH_PROXY", "").strip()
+        if proxy:
+            curl_args.extend(("--proxy", proxy))
+        curl_args.append(url)
         process = subprocess.run(
-            [
-                "curl", "--location", "--fail", "--silent", "--show-error",
-                "--max-time", "15", "--user-agent", USER_AGENT, url,
-            ],
+            curl_args,
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=20,
         )
         if process.returncode != 0:
@@ -471,7 +526,7 @@ def naver_results(query: str) -> list[dict[str, str]]:
                 "title": title,
                 "url": target,
                 "snippet": parent_text[:1000],
-                "engine": "naver_web",
+                "engine": f"naver_{where}",
             })
             seen.add(target)
             if len(found) == 30:
@@ -479,6 +534,68 @@ def naver_results(query: str) -> list[dict[str, str]]:
         return found
     except (subprocess.TimeoutExpired, RuntimeError) as exc:
         return [{"error": f"{type(exc).__name__}: {exc}"}]
+
+
+def brave_results(query: str, retries: int = 1) -> list[dict[str, str]]:
+    """Return ordinary web-result URLs from Brave's public result page."""
+    url = "https://search.brave.com/search?" + urllib.parse.urlencode({
+        "q": query,
+        "source": "web",
+    })
+    last_error = None
+    for attempt in range(max(1, retries)):
+        try:
+            agent_index = (
+                int(hashlib.sha256(query.encode("utf-8")).hexdigest()[:8], 16) + attempt
+            ) % len(SEARCH_USER_AGENTS)
+            process = subprocess.run(
+                [
+                    "curl", "--location", "--fail", "--silent", "--show-error",
+                    "--max-time", "20", "--user-agent", SEARCH_USER_AGENTS[agent_index], url,
+                ],
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=25,
+            )
+            if process.returncode != 0:
+                raise RuntimeError(process.stderr.decode("utf-8", errors="replace").strip())
+            soup = BeautifulSoup(process.stdout.decode("utf-8", errors="replace"), "html.parser")
+            found = []
+            seen = set()
+            for container in soup.select('div.snippet[data-type="web"]'):
+                title_node = container.select_one(".search-snippet-title")
+                anchor = title_node.find_parent("a", href=True) if title_node else None
+                if anchor is None:
+                    continue
+                target = html.unescape(str(anchor.get("href") or "")).strip()
+                if not target.startswith(("http://", "https://")) or target in seen:
+                    continue
+                host = base_host(target)
+                if host_matches(host, "brave.com") or host_matches(host, "search.brave.com"):
+                    continue
+                title = re.sub(
+                    r"\s+", " ",
+                    str(title_node.get("title") or title_node.get_text(" ", strip=True)),
+                ).strip()
+                snippet_node = container.select_one(".generic-snippet .content")
+                snippet = re.sub(
+                    r"\s+", " ",
+                    snippet_node.get_text(" ", strip=True) if snippet_node else "",
+                ).strip()
+                if not title:
+                    continue
+                found.append({
+                    "title": title,
+                    "url": target,
+                    "snippet": snippet[:1000],
+                    "engine": "brave_web",
+                })
+                seen.add(target)
+                if len(found) == 30:
+                    break
+            return found
+        except (subprocess.TimeoutExpired, RuntimeError) as exc:
+            last_error = exc
+        time.sleep(1.2 * (attempt + 1))
+    return [{"error": f"{type(last_error).__name__}: {last_error}"}] if last_error else []
 
 
 def search_results(query: str, retries: int = 1) -> list[dict[str, str]]:
@@ -696,10 +813,101 @@ def web_match(plan: dict[str, Any], used: set[str], candidate: dict[str, Any]) -
 
 
 def extract_html_text(body: bytes) -> str:
+    decoded = body.decode("utf-8", errors="replace")
+    # A few legacy publishers leave an earlier ``script`` tag malformed.
+    # HTML parsers then treat the remainder, including the visible article,
+    # as JavaScript.  Recover an explicitly marked article region from the
+    # raw document before asking BeautifulSoup to parse the whole page.
+    raw_article = re.search(
+        r'''(?is)<(?:div|article)\b[^>]*(?:
+            itemprop\s*=\s*["']articleBody["']|
+            id\s*=\s*["']newsViewArea["']
+        )[^>]*>''',
+        decoded,
+        flags=re.VERBOSE,
+    )
+    if raw_article:
+        end_candidates = [
+            decoded.find(marker, raw_article.end())
+            for marker in (
+                "<!--// 기사 본문 내용 -->",
+                "<!-- // 기사 본문 내용 -->",
+                "<!-- 기자 정보 -->",
+                "</article>",
+            )
+        ]
+        end_candidates = [value for value in end_candidates if value >= 0]
+        end = min(end_candidates) if end_candidates else min(
+            len(decoded), raw_article.end() + 60_000
+        )
+        fragment = BeautifulSoup(decoded[raw_article.end():end], "html.parser")
+        for element in fragment(["script", "style", "nav", "footer", "noscript", "svg"]):
+            element.decompose()
+        raw_text = re.sub(r"\s+", " ", fragment.get_text(" ", strip=True)).strip()
+        if len(raw_text) >= 200:
+            return raw_text
     soup = BeautifulSoup(body, "html.parser")
+    # Some legacy news pages contain malformed navigation markup that wraps
+    # the actual article node.  Removing every ``nav`` first can therefore
+    # erase a perfectly usable body.  Prefer explicit article containers and
+    # clean a detached copy before falling back to whole-page extraction.
+    article_selectors = (
+        '[itemprop="articleBody"]',
+        "#newsViewArea",
+        "article",
+        ".article-body",
+        ".article_body",
+        ".articleBody",
+        ".news_view",
+        ".view_con",
+        ".article_txt",
+        ".news_end",
+    )
+    article_candidates = []
+    for selector in article_selectors:
+        for node in soup.select(selector):
+            fragment = BeautifulSoup(str(node), "html.parser")
+            for element in fragment(["script", "style", "nav", "footer", "noscript", "svg"]):
+                element.decompose()
+            text = re.sub(r"\s+", " ", fragment.get_text(" ", strip=True)).strip()
+            if len(text) >= 200:
+                article_candidates.append(text)
+    if article_candidates:
+        return max(article_candidates, key=len)
     for element in soup(["script", "style", "nav", "footer", "noscript", "svg"]):
         element.decompose()
     return re.sub(r"\s+", " ", soup.get_text(" ", strip=True)).strip()
+
+
+def extract_html_published_at(body: bytes) -> str:
+    """Return an article publication timestamp from page metadata when present.
+
+    Body text often omits the year while sidebars contain newer dates.  Keeping
+    the publisher supplied metadata separate prevents a repeated event from
+    being mistaken for the concrete event named by a recovery query.
+    """
+    soup = BeautifulSoup(body, "html.parser")
+    selectors = (
+        ("meta", {"property": "article:published_time"}, "content"),
+        ("meta", {"name": "published_date"}, "content"),
+        ("meta", {"name": "pubdate"}, "content"),
+        ("meta", {"itemprop": "datePublished"}, "content"),
+        ("time", {"itemprop": "datePublished"}, "datetime"),
+    )
+    for tag_name, attrs, value_attr in selectors:
+        element = soup.find(tag_name, attrs=attrs)
+        value = str(element.get(value_attr) or "").strip() if element else ""
+        if re.search(r"(?:19|20)\d{2}[-/.]\d{1,2}[-/.]\d{1,2}", value):
+            return value
+    # Some publishers expose datePublished only inside JSON-LD.
+    match = re.search(
+        rb'"datePublished"\s*:\s*"([^"\\]{8,64})"', body, flags=re.I,
+    )
+    if match:
+        value = match.group(1).decode("utf-8", errors="replace").strip()
+        if re.search(r"(?:19|20)\d{2}[-/.]\d{1,2}[-/.]\d{1,2}", value):
+            return value
+    return ""
 
 
 def relevant_excerpt(text: str, contexts: list[str], limit: int = 12000) -> str:
@@ -716,37 +924,66 @@ def relevant_excerpt(text: str, contexts: list[str], limit: int = 12000) -> str:
         context_text,
     ):
         anchors.extend(f"Section {number}" for number in match.groups() if number)
-    token_terms = sorted(tokens(context_text), key=lambda value: (-len(value), value))[:48]
+    token_terms = sorted(tokens(context_text), key=lambda value: (-len(value), value))[:64]
     terms = list(dict.fromkeys(anchors + token_terms))
     folded = text.casefold()
-    windows = [(0, min(1200, len(text)))]
-    for term_index, term in enumerate(terms):
-        start_at = 0
-        for _ in range(4 if term_index < len(anchors) else 2):
-            index = folded.find(term.casefold(), start_at)
-            if index < 0:
-                break
-            windows.append((max(0, index - 420), min(len(text), index + len(term) + 780)))
-            start_at = index + len(term)
-    windows.sort()
-    merged = []
-    for start, end in windows:
-        if merged and start <= merged[-1][1] + 120:
-            merged[-1] = (merged[-1][0], max(merged[-1][1], end))
-        else:
-            merged.append((start, end))
-    parts = []
-    size = 0
-    for start, end in merged:
-        part = text[start:end].strip()
-        if not part:
+    frequencies = {
+        term: folded.count(term.casefold())
+        for term in terms
+        if term and term.casefold() in folded
+    }
+    if not frequencies:
+        # Cross-language validation contexts may not share literal tokens with
+        # an English source.  In that case retain the requested amount rather
+        # than silently collapsing to a short lead paragraph.
+        return text[:limit]
+
+    # Rank overlapping chunks by distinctive context coverage instead of
+    # sorting every hit by document position.  The previous implementation
+    # could spend the entire excerpt budget on a long introduction containing
+    # a frequent word such as "사할린", cutting off the later paragraph that
+    # contained the concrete event, quotation, and figures under audit.
+    chunk_size = min(1400, max(700, limit // 2))
+    stride = max(350, chunk_size // 2)
+    anchor_set = set(anchors)
+    candidates: list[tuple[float, int, int]] = []
+    for start in range(0, len(text), stride):
+        end = min(len(text), start + chunk_size)
+        chunk = folded[start:end]
+        score = 0.0
+        matched = 0
+        for term, frequency in frequencies.items():
+            if term.casefold() not in chunk:
+                continue
+            matched += 1
+            rarity = 1.0 / max(1.0, frequency ** 0.5)
+            score += (len(term) + 3.0) * rarity
+            if term in anchor_set:
+                score += 20.0
+        if matched:
+            # Coverage keeps a passage with several mutually supporting
+            # anchors ahead of one that merely repeats a single frequent term.
+            score += matched * matched * 0.75
+            candidates.append((score, start, end))
+        if end == len(text):
+            break
+    if not candidates:
+        return text[:limit]
+
+    selected: list[tuple[int, int]] = []
+    used = 0
+    for _score, start, end in sorted(candidates, key=lambda row: (-row[0], row[1])):
+        if any(start < prior_end and end > prior_start for prior_start, prior_end in selected):
             continue
-        remaining = limit - size
+        remaining = limit - used - (5 if selected else 0)
         if remaining <= 0:
             break
-        parts.append(part[:remaining])
-        size += min(len(part), remaining) + 5
-    return "\n...\n".join(parts)[:limit]
+        if end - start > remaining:
+            end = start + remaining
+        selected.append((start, end))
+        used += end - start + (5 if len(selected) > 1 else 0)
+    selected.sort()
+    return "\n...\n".join(text[start:end].strip() for start, end in selected)[:limit]
 
 
 def fetch_source_once(source: dict[str, Any], snapshot_dir: Path) -> dict[str, Any]:
@@ -773,6 +1010,47 @@ def fetch_source_once(source: dict[str, Any], snapshot_dir: Path) -> dict[str, A
                 "relevance": relevance,
             },
         }
+    source_id = str(source.get("source_id") or "")
+    for suffix in (".pdf", ".html"):
+        snapshot = snapshot_dir / f"{source_id}{suffix}"
+        if not source_id or not snapshot.is_file():
+            continue
+        body = snapshot.read_bytes()
+        if suffix == ".pdf":
+            text_path = snapshot.with_suffix(".txt")
+            text = (
+                text_path.read_text(encoding="utf-8", errors="replace")
+                if text_path.is_file() else ""
+            )
+            content_type = "application/pdf"
+        else:
+            text = extract_html_text(body)
+            content_type = "text/html"
+        published_at = (
+            extract_html_published_at(body) if suffix == ".html" else ""
+        )
+        text = re.sub(r"\s+", " ", text).strip()
+        if len(text) < 200:
+            continue
+        contexts = source.get("retrieval_context", [])
+        relevance = source_relevance(text, contexts)
+        return {
+            **source,
+            "published_at": published_at or source.get("published_at") or "",
+            "snapshot_sha256": hashlib.sha256(body).hexdigest(),
+            "availability": "fetched",
+            "retrieval": {
+                "status": "reused_run_snapshot",
+                "source_url": source["url"],
+                "final_url": source["url"],
+                "content_type": content_type,
+                "size_bytes": len(body),
+                "text_chars": len(text),
+                "text_excerpt": relevant_excerpt(text, contexts),
+                "relevance_pass": relevance["passed"],
+                "relevance": relevance,
+            },
+        }
     url = source.get("retrieval_url") or source["url"]
     parsed_url = urllib.parse.urlsplit(url)
     if host_blocked((parsed_url.hostname or "").casefold()):
@@ -792,7 +1070,10 @@ def fetch_source_once(source: dict[str, Any], snapshot_dir: Path) -> dict[str, A
     max_size = 40 * 1024 * 1024
     try:
         request = urllib.request.Request(request_url, headers={"User-Agent": request_user_agent})
-        with urllib.request.urlopen(request, timeout=45) as response:
+        opener = urllib.request.build_opener(
+            urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar())
+        )
+        with opener.open(request, timeout=45) as response:
             final_url = response.geturl()
             status = getattr(response, "status", 200)
             content_type = response.headers.get_content_type()
@@ -804,11 +1085,26 @@ def fetch_source_once(source: dict[str, Any], snapshot_dir: Path) -> dict[str, A
                 raise ValueError(
                     f"redirected outside required publisher host: {final_host}"
                 )
-            if content_type not in ALLOWED_CONTENT_TYPES:
+            generic_download_types = {
+                "application/octet-stream",
+                "application/x-download",
+                "application/x-msdownload",
+            }
+            if (
+                content_type not in ALLOWED_CONTENT_TYPES
+                and content_type not in generic_download_types
+            ):
                 raise ValueError(f"unsupported content type: {content_type}")
             body = response.read(max_size + 1)
         if len(body) > max_size:
             raise ValueError("response exceeds 40 MiB")
+        if (
+            content_type not in ALLOWED_CONTENT_TYPES
+            and not body.startswith(b"%PDF")
+        ):
+            raise ValueError(
+                f"generic download is not a PDF: {content_type}"
+            )
         digest = hashlib.sha256(body).hexdigest()
         suffix = ".pdf" if content_type == "application/pdf" or body[:4] == b"%PDF" else ".html"
         snapshot_dir.mkdir(parents=True, exist_ok=True)
@@ -823,12 +1119,16 @@ def fetch_source_once(source: dict[str, Any], snapshot_dir: Path) -> dict[str, A
             text = text_path.read_text(encoding="utf-8", errors="replace") if proc.returncode == 0 and text_path.exists() else ""
         else:
             text = extract_html_text(body)
+        published_at = (
+            extract_html_published_at(body) if suffix == ".html" else ""
+        )
         text = re.sub(r"\s+", " ", text).strip()
         contexts = source.get("retrieval_context", [])
         excerpt = relevant_excerpt(text, contexts)
         relevance = source_relevance(text, contexts)
         return {
             **source,
+            "published_at": published_at or source.get("published_at") or "",
             "snapshot_sha256": digest,
             "availability": "fetched",
             "retrieval": {
@@ -869,7 +1169,9 @@ def fetch_source(source: dict[str, Any], snapshot_dir: Path) -> dict[str, Any]:
         fetched = fetch_source_once(option, snapshot_dir)
         retrieval = fetched.get("retrieval", {})
         usable = (
-            retrieval.get("status") in {"fetched", "reused_verified_snapshot"}
+            retrieval.get("status") in {
+                "fetched", "reused_verified_snapshot", "reused_run_snapshot"
+            }
             and retrieval.get("text_chars", 1) >= 200
             and retrieval.get("relevance_pass") is True
         )

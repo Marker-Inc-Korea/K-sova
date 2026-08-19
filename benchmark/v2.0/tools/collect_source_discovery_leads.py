@@ -7,7 +7,10 @@ import argparse
 import concurrent.futures
 import hashlib
 import json
+import os
+import random
 import re
+import subprocess
 import time
 import urllib.parse
 import urllib.error
@@ -17,7 +20,12 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
-from discover_calibration_sources import duckduckgo_lite_results, naver_results
+from discover_calibration_sources import (
+    brave_results,
+    duckduckgo_lite_results,
+    naver_results,
+    search_results,
+)
 
 
 USER_AGENT = "Mozilla/5.0 (compatible; KSOVABenchSourceDiscovery/1.0)"
@@ -46,10 +54,36 @@ def host_matches(host: str, suffixes: list[str]) -> bool:
     return any(host == value or host.endswith("." + value) for value in suffixes)
 
 
+def site_restrictions(query: str) -> list[str]:
+    """Return normalized hosts from explicit ``site:`` query operators."""
+    return [
+        canonical_host("https://" + value.strip("()[]{}<>,;\"'"))
+        for value in re.findall(r"(?:^|\s)site:([^\s]+)", query, re.IGNORECASE)
+        if value.strip("()[]{}<>,;\"'")
+    ]
+
+
 def fetch_xml(url: str, retries: int) -> ET.Element:
     last_error: Exception | None = None
     for attempt in range(retries + 1):
         try:
+            proxy = os.environ.get("KSOVA_SEARCH_PROXY", "").strip()
+            if proxy:
+                process = subprocess.run(
+                    [
+                        "curl", "--location", "--fail", "--silent", "--show-error",
+                        "--max-time", "25", "--user-agent", USER_AGENT,
+                        "--proxy", proxy, url,
+                    ],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    timeout=30,
+                )
+                if process.returncode != 0:
+                    raise RuntimeError(
+                        process.stderr.decode("utf-8", "replace").strip()
+                    )
+                return ET.fromstring(process.stdout)
             request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
             with urllib.request.urlopen(request, timeout=30) as response:
                 return ET.fromstring(response.read())
@@ -166,7 +200,7 @@ def duckduckgo_web(query: str, _language: str, retries: int) -> list[dict[str, s
     ]
 
 
-def naver_web(query: str, _language: str, _retries: int) -> list[dict[str, str]]:
+def brave_web(query: str, _language: str, retries: int) -> list[dict[str, str]]:
     return [
         {
             "title": str(row.get("title") or ""),
@@ -175,22 +209,101 @@ def naver_web(query: str, _language: str, _retries: int) -> list[dict[str, str]]
             "publisher": canonical_host(str(row.get("url") or "")),
             "published_at": "",
         }
-        for row in naver_results(query)
+        for row in brave_results(query, max(1, retries + 1))
+        if not row.get("error")
+    ]
+
+
+NAVER_STARTS = (1,)
+
+
+def naver_web(query: str, _language: str, _retries: int) -> list[dict[str, str]]:
+    rows = [
+        {
+            "title": str(row.get("title") or ""),
+            "url": str(row.get("url") or ""),
+            "snippet": str(row.get("snippet") or ""),
+            "publisher": canonical_host(str(row.get("url") or "")),
+            "published_at": "",
+        }
+        for start in NAVER_STARTS
+        for row in naver_results(query, start=start)
+        if not row.get("error")
+    ]
+    deduped = {}
+    for row in rows:
+        deduped.setdefault(canonical_url(row["url"]), row)
+    return list(deduped.values())
+
+
+def naver_news(query: str, _language: str, _retries: int) -> list[dict[str, str]]:
+    rows = [
+        {
+            "title": str(row.get("title") or ""),
+            "url": str(row.get("url") or ""),
+            "snippet": str(row.get("snippet") or ""),
+            "publisher": canonical_host(str(row.get("url") or "")),
+            "published_at": "",
+        }
+        for start in NAVER_STARTS
+        for row in naver_results(query, start=start, where="news")
+        if not row.get("error")
+    ]
+    deduped = {}
+    for row in rows:
+        deduped.setdefault(canonical_url(row["url"]), row)
+    return list(deduped.values())
+
+
+def yahoo_web(query: str, _language: str, retries: int) -> list[dict[str, str]]:
+    return [
+        {
+            "title": str(row.get("title") or ""),
+            "url": str(row.get("url") or ""),
+            "snippet": str(row.get("snippet") or ""),
+            "publisher": canonical_host(str(row.get("url") or "")),
+            "published_at": "",
+        }
+        for row in search_results(query, max(1, retries + 1))
         if not row.get("error")
     ]
 
 
 ENGINES = {
+    "brave_web": brave_web,
     "google_news": google_news,
     "bing_web": bing_web,
     "duckduckgo_web": duckduckgo_web,
     "naver_web": naver_web,
+    "naver_news": naver_news,
+    "yahoo_web": yahoo_web,
     "wikipedia_search": wikipedia_search,
 }
 
 DISCOVERY_METADATA_KEYS = (
-    "candidate_id", "source_role", "jurisdiction", "source_variant",
+    "candidate_id", "domain_id", "source_role", "jurisdiction",
+    "source_variant", "query_kind", "require_korea_signal",
+    "search_subject_ko", "search_subject_en",
 )
+
+
+def canonical_url(url: str) -> str:
+    """Return a conservative URL identity for discovery deduplication."""
+    try:
+        parts = urllib.parse.urlsplit(url.strip())
+    except ValueError:
+        return url.strip()
+    query = [
+        (key, value)
+        for key, value in urllib.parse.parse_qsl(parts.query, keep_blank_values=True)
+        if not key.casefold().startswith("utm_")
+        and key.casefold() not in {"fbclid", "gclid", "ref"}
+    ]
+    path = parts.path.rstrip("/") or "/"
+    return urllib.parse.urlunsplit((
+        parts.scheme.casefold(), parts.netloc.casefold(), path,
+        urllib.parse.urlencode(sorted(query)), "",
+    ))
 
 
 def discovery_record(record: dict[str, Any]) -> dict[str, Any]:
@@ -203,22 +316,126 @@ def main() -> int:
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--report", type=Path, required=True)
-    parser.add_argument("--existing", type=Path)
+    parser.add_argument(
+        "--existing",
+        type=Path,
+        help=(
+            "Prior discovery-lead JSONL to merge (rows must contain lead_id). "
+            "This is not a canonical sources.jsonl input."
+        ),
+    )
     parser.add_argument("--retry-report", type=Path)
     parser.add_argument("--delay", type=float, default=0.15)
     parser.add_argument("--retries", type=int, default=2)
     parser.add_argument("--max-results-per-query", type=int, default=100)
     parser.add_argument("--max-workers", type=int, default=12)
     parser.add_argument(
+        "--naver-start", action="append", type=int,
+        choices=range(1, 92, 10),
+        help=(
+            "Naver result offsets to collect (1, 11, 21, ...). Repeat for "
+            "multiple pages; defaults to the first page only."
+        ),
+    )
+    parser.add_argument(
+        "--domain-id",
+        action="append",
+        choices=[f"D{index:02d}" for index in range(1, 9)],
+        help=(
+            "Run only queries assigned to this K-SOVA domain. Repeat the "
+            "option to select more than one domain."
+        ),
+    )
+    parser.add_argument(
+        "--source-variant",
+        action="append",
+        help=(
+            "Run only queries with this source_variant. Repeat the option to "
+            "select multiple variants."
+        ),
+    )
+    parser.add_argument(
+        "--candidate-id", action="append",
+        help="Run only queries linked to the named topic/event id; repeatable.",
+    )
+    parser.add_argument(
+        "--shuffle-seed",
+        type=int,
+        help="Deterministically shuffle selected queries before an optional limit.",
+    )
+    parser.add_argument(
+        "--query-limit",
+        type=int,
+        help="Run at most this many selected queries after filtering and shuffling.",
+    )
+    parser.add_argument(
+        "--query-offset", type=int, default=0,
+        help="Skip this many selected queries before applying query-limit.",
+    )
+    parser.add_argument(
         "--engines",
         nargs="+",
         choices=sorted(ENGINES),
         help="Override the engines configured in the query file.",
     )
+    parser.add_argument(
+        "--exclude-engines",
+        nargs="+",
+        choices=sorted(ENGINES),
+        default=[],
+        help="Skip temporarily unavailable engines without rewriting the query plan.",
+    )
     args = parser.parse_args()
+
+    # Validate resumable discovery input before issuing any network requests.
+    # Canonical source rows and discovery leads are both JSONL and were easy to
+    # confuse when this option had no schema guard; failing only after all
+    # searches wastes the run and encourages ad-hoc recovery files.
+    existing_rows: list[dict[str, Any]] = []
+    if args.existing:
+        if not args.existing.exists():
+            raise FileNotFoundError(f"existing discovery leads not found: {args.existing}")
+        existing_rows = [
+            json.loads(line)
+            for line in args.existing.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+        invalid_existing = [
+            index for index, row in enumerate(existing_rows, 1)
+            if not isinstance(row, dict) or not str(row.get("lead_id") or "").strip()
+        ]
+        if invalid_existing:
+            raise ValueError(
+                "--existing accepts discovery leads only; missing lead_id at "
+                f"rows {invalid_existing[:10]}"
+            )
+
+    global NAVER_STARTS
+    NAVER_STARTS = tuple(dict.fromkeys(args.naver_start or [1]))
 
     config = json.loads(args.config.read_text(encoding="utf-8"))
     selected_queries = list(enumerate(config["queries"], 1))
+    if args.domain_id:
+        selected_domains = set(args.domain_id)
+        selected_queries = [
+            (index, entry)
+            for index, entry in selected_queries
+            if entry.get("domain_id") in selected_domains
+        ]
+    if args.source_variant:
+        selected_variants = set(args.source_variant)
+        selected_queries = [
+            (index, entry)
+            for index, entry in selected_queries
+            if entry.get("source_variant") in selected_variants
+        ]
+    if args.candidate_id:
+        selected_candidates = set(args.candidate_id)
+        selected_queries = [
+            (index, entry)
+            for index, entry in selected_queries
+            if entry.get("candidate_id") in selected_candidates
+        ]
     if args.retry_report:
         retry_payload = json.loads(args.retry_report.read_text(encoding="utf-8"))
         failed_indices = {
@@ -229,11 +446,26 @@ def main() -> int:
         selected_queries = [
             (index, entry) for index, entry in selected_queries if index in failed_indices
         ]
+    if args.shuffle_seed is not None:
+        random.Random(args.shuffle_seed).shuffle(selected_queries)
+    if args.query_offset < 0:
+        raise ValueError("query-offset must not be negative")
+    if args.query_offset:
+        selected_queries = selected_queries[args.query_offset:]
+    if args.query_limit is not None:
+        if args.query_limit < 1:
+            raise ValueError("query-limit must be positive")
+        selected_queries = selected_queries[:args.query_limit]
     blocked = [str(value).casefold() for value in config.get("blocked_hosts", [])]
     discovery_only = [
         str(value).casefold() for value in config.get("discovery_only_hosts", [])
     ]
-    configured_engines = args.engines or config.get("engines") or list(ENGINES)
+    excluded_engines = set(args.exclude_engines)
+    configured_engines = [
+        engine
+        for engine in (args.engines or config.get("engines") or list(ENGINES))
+        if engine not in excluded_engines
+    ]
     worker_count = args.max_workers
     if set(configured_engines) == {"wikipedia_search"}:
         worker_count = min(worker_count, 2)
@@ -243,7 +475,10 @@ def main() -> int:
 
     tasks: list[tuple[int, dict[str, Any], str]] = []
     for query_index, entry in selected_queries:
-        for engine_name in args.engines or entry.get("engines") or configured_engines:
+        entry_engines = args.engines or entry.get("engines") or configured_engines
+        for engine_name in entry_engines:
+            if engine_name in excluded_engines:
+                continue
             if engine_name not in ENGINES:
                 raise ValueError(f"unsupported engine: {engine_name}")
             tasks.append((query_index, entry, engine_name))
@@ -262,7 +497,10 @@ def main() -> int:
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=worker_count) as executor:
         futures = [executor.submit(run_task, task) for task in tasks]
-        for future in concurrent.futures.as_completed(futures):
+        progress_interval = max(100, len(futures) // 20)
+        for completed, future in enumerate(
+            concurrent.futures.as_completed(futures), 1
+        ):
             query_index, entry, engine_name, results, error = future.result()
             if error:
                 errors.append({
@@ -271,63 +509,77 @@ def main() -> int:
                     "query": entry["query"],
                     "error": error,
                 })
-                continue
-            for rank, result in enumerate(results[:args.max_results_per_query], 1):
-                raw_count += 1
-                title = re.sub(r"\s+", " ", result["title"]).strip()
-                url = result["url"].strip()
-                if len(title) < 12 or not url:
-                    continue
-                relevance_text = " ".join((
-                    title,
-                    result.get("snippet", ""),
-                    result.get("publisher", ""),
-                ))
-                if not KOREA_PATTERN.search(relevance_text):
-                    continue
-                host = canonical_host(url)
-                if host_blocked(host, blocked):
-                    continue
-                identity = normalize_text(title)
-                if not identity:
-                    continue
-                record = {
-                    "lead_id": "ksdl_" + hashlib.sha256(identity.encode("utf-8")).hexdigest()[:16],
-                    "lane": entry["lane"],
-                    "language": entry["language"],
-                    "query": entry["query"],
-                    "engine": engine_name,
-                    "rank": rank,
-                    "title": title,
-                    "url": url,
-                    "host": host,
-                    "publisher": result.get("publisher", ""),
-                    "published_at": result.get("published_at", ""),
-                    "snippet": re.sub(r"<[^>]+>", " ", result.get("snippet", ""))[:1000].strip(),
-                    "evidence_role": "discovery_only",
-                    "reliability_tier": "C",
-                    "allowed_uses": ["issue_discovery", "query_expansion"],
-                    "reliability_reason": (
-                        "editable_tertiary_index"
-                        if host_matches(host, discovery_only)
-                        else "search_result_not_directly_verified"
-                    ),
-                }
-                for key in DISCOVERY_METADATA_KEYS:
-                    if entry.get(key) is not None:
-                        record[key] = entry[key]
-                records.append(record)
+            else:
+                for rank, result in enumerate(results[:args.max_results_per_query], 1):
+                    raw_count += 1
+                    title = re.sub(r"\s+", " ", result["title"]).strip()
+                    url = result["url"].strip()
+                    if len(title) < 12 or not url:
+                        continue
+                    relevance_text = " ".join((
+                        title,
+                        result.get("snippet", ""),
+                        result.get("publisher", ""),
+                    ))
+                    if entry.get("require_korea_signal", True) and not KOREA_PATTERN.search(
+                        relevance_text
+                    ):
+                        continue
+                    host = canonical_host(url)
+                    if host_blocked(host, blocked):
+                        continue
+                    # Public search engines occasionally ignore an explicit
+                    # site operator and return a high-ranking mirror or wiki.
+                    # Those results would contaminate an institutional census,
+                    # so enforce the requested host after URL resolution.
+                    requested_sites = site_restrictions(entry["query"])
+                    if requested_sites and not host_matches(host, requested_sites):
+                        continue
+                    identity = canonical_url(url)
+                    if not identity:
+                        continue
+                    record = {
+                        "lead_id": "ksdl_" + hashlib.sha256(
+                            identity.encode("utf-8")
+                        ).hexdigest()[:16],
+                        "lane": entry["lane"],
+                        "language": entry["language"],
+                        "query": entry["query"],
+                        "engine": engine_name,
+                        "rank": rank,
+                        "title": title,
+                        "url": url,
+                        "host": host,
+                        "publisher": result.get("publisher", ""),
+                        "published_at": result.get("published_at", ""),
+                        "snippet": re.sub(
+                            r"<[^>]+>", " ", result.get("snippet", "")
+                        )[:1000].strip(),
+                        "evidence_role": "discovery_only",
+                        "reliability_tier": "C",
+                        "allowed_uses": ["issue_discovery", "query_expansion"],
+                        "reliability_reason": (
+                            "editable_tertiary_index"
+                            if host_matches(host, discovery_only)
+                            else "search_result_not_directly_verified"
+                        ),
+                    }
+                    for key in DISCOVERY_METADATA_KEYS:
+                        if entry.get(key) is not None:
+                            record[key] = entry[key]
+                    records.append(record)
+            if completed % progress_interval == 0 or completed == len(futures):
+                print(
+                    f"[search {completed}/{len(futures)}] "
+                    f"raw={raw_count} retained={len(records)} errors={len(errors)}",
+                    flush=True,
+                )
 
-    # A title may be returned by multiple languages and engines. Preserve every
-    # discovery query as provenance while emitting one compact lead per title.
+    # The same URL may be returned by multiple languages and engines. Preserve
+    # every discovery query as provenance while emitting one compact URL lead.
     merged: dict[str, dict[str, Any]] = {}
     existing_count = 0
-    if args.existing and args.existing.exists():
-        existing_rows = [
-            json.loads(line)
-            for line in args.existing.read_text(encoding="utf-8").splitlines()
-            if line.strip()
-        ]
+    if existing_rows:
         existing_count = len(existing_rows)
         for record in existing_rows:
             record["evidence_role"] = "discovery_only"
@@ -376,6 +628,9 @@ def main() -> int:
         "config_queries": len(config["queries"]),
         "engine_requests": len(tasks),
         "workers": worker_count,
+        "naver_starts": list(NAVER_STARTS),
+        "query_offset": args.query_offset,
+        "excluded_engines": sorted(excluded_engines),
         "raw_results": raw_count,
         "existing_leads": existing_count,
         "unique_leads": len(rows),
