@@ -211,6 +211,22 @@ def prepare(args: argparse.Namespace) -> int:
             raise ValueError(f"example references unknown issue {issue_id}")
         grouped[issue_id].append(example)
 
+    requested_issue_ids = {str(value) for value in args.only_issue_id}
+    missing_issue_ids = requested_issue_ids - set(grouped)
+    if missing_issue_ids:
+        raise ValueError(
+            f"requested issue IDs are absent: {sorted(missing_issue_ids)}"
+        )
+    if requested_issue_ids:
+        grouped = defaultdict(
+            list,
+            {
+                issue_id: rows
+                for issue_id, rows in grouped.items()
+                if issue_id in requested_issue_ids
+            },
+        )
+
     requests = []
     prompt_chars = []
     for issue_id in sorted(grouped):
@@ -259,7 +275,7 @@ def prepare(args: argparse.Namespace) -> int:
     report = {
         "schema_version": "ksova-full-answer-validation-plan-1.0",
         "requests": len(requests),
-        "examples": len(examples),
+        "examples": sum(len(rows) for rows in grouped.values()),
         "issues": len(grouped),
         "backfilled_sources": sorted(backfilled),
         "prompt_chars": {
@@ -441,6 +457,10 @@ def main() -> int:
     prepare_parser.add_argument("--output", type=Path, required=True)
     prepare_parser.add_argument("--report", type=Path, required=True)
     prepare_parser.add_argument("--max-tokens", type=int, default=6144)
+    prepare_parser.add_argument(
+        "--only-issue-id", action="append", default=[],
+        help="Emit requests only for these issue IDs after validating all inputs.",
+    )
     prepare_parser.set_defaults(handler=prepare)
 
     parse_parser = commands.add_parser("parse")
