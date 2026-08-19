@@ -879,6 +879,9 @@ def command_build_role_source_search(args: argparse.Namespace) -> int:
             row for row in queue
             if args.provenance_route in (row.get("provenance_routes") or [])
         ]
+    if args.lane:
+        selected_lanes = set(args.lane)
+        queue = [row for row in queue if row.get("lane") in selected_lanes]
     queue.sort(key=lambda row: (
         -int(row.get("priority_score") or 0), row["lane"], row["issue_id"]
     ))
@@ -927,6 +930,7 @@ def command_build_role_source_search(args: argparse.Namespace) -> int:
         "schema_version": "ksova-targeted-role-source-search-plan-1.0",
         "input_queue": len(read_jsonl(args.verification_queue)),
         "eligible_queue": len(queue),
+        "lane_filter": sorted(set(args.lane or [])),
         "selected_issues": len(selected_issues),
         "logical_queries": len(queries),
         "engine_requests": len(queries),
@@ -1252,6 +1256,10 @@ def main() -> int:
     build_role_search.add_argument("--max-query-chars", type=int, default=180)
     build_role_search.add_argument(
         "--provenance-route", choices=("model_hypothesized", "web_discovered")
+    )
+    build_role_search.add_argument(
+        "--lane", action="append", choices=sorted(LANES), default=[],
+        help="limit the search wave to an under-covered lane; repeatable",
     )
     build_role_search.set_defaults(func=command_build_role_source_search)
 

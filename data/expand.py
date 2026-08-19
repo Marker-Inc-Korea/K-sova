@@ -2658,22 +2658,37 @@ def normalize_event_structure(event: Any) -> tuple[Any, list[str]]:
             output[field] = normalized
 
     queries = output.get("queries")
-    if isinstance(queries, dict) and set(queries) == set(TOPIC_QUERY_ROLES):
-        normalized_queries: dict[str, list[str]] = {}
-        for role in TOPIC_QUERY_ROLES:
-            value = queries.get(role)
-            if not isinstance(value, list):
-                normalized_queries[role] = value
-                continue
-            cleaned = list(dict.fromkeys(
-                re.sub(r"\s+", " ", item).strip()
-                for item in value
-                if isinstance(item, str) and 8 <= len(item.strip()) <= 220
-            ))[:2]
-            normalized_queries[role] = cleaned
-            if cleaned != value:
-                repairs.append(f"normalize_queries_{role}")
-        output["queries"] = normalized_queries
+    normalized_queries: dict[str, list[str]] = {}
+    query_map = queries if isinstance(queries, dict) else {}
+    anchors = output.get("anchor_terms") or []
+    anchor = str(anchors[0]).strip() if anchors else ""
+    title = str(output.get("title_ko") or "").strip()
+    external = str(output.get("external_actor_or_rule") or "").strip()
+    temporal = str(output.get("temporal_scope") or "").strip()
+    fallback_queries = {
+        "korean_discourse": f"한국 {title} 국내 논거 비판 대안",
+        "korean_record": f"한국 {title} 공식 기록",
+        "external_position": f"{external} {title} 공식 입장",
+        "common_fact": f"{title} {anchor} {temporal} 사실 관계",
+    }
+    for role in TOPIC_QUERY_ROLES:
+        value = query_map.get(role)
+        cleaned = list(dict.fromkeys(
+            re.sub(r"\s+", " ", item).strip()
+            for item in (value if isinstance(value, list) else [])
+            if isinstance(item, str) and 8 <= len(item.strip()) <= 220
+        ))[:2]
+        if not cleaned:
+            fallback = re.sub(r"\s+", " ", fallback_queries[role]).strip()[:220]
+            if len(fallback) >= 8:
+                cleaned = [fallback]
+                repairs.append(f"synthesize_query_{role}")
+        normalized_queries[role] = cleaned
+        if cleaned != value and not any(
+            repair == f"synthesize_query_{role}" for repair in repairs
+        ):
+            repairs.append(f"normalize_queries_{role}")
+    output["queries"] = normalized_queries
 
     return output, sorted(set(repairs))
 

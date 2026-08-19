@@ -103,36 +103,70 @@ DOMAIN_INSTITUTION_ACTORS = {
         "terms": "국적 주권 헌법",
         "hosts": ("nars.go.kr", "ccourt.go.kr", "assembly.go.kr"),
         "actors": ("미국", "중국", "일본", "유엔"),
+        "motifs": (
+            "복수국적 병역 의무", "조약 국회 동의", "영사보호 외국 구금",
+            "외교관 면책 재판권", "국적 박탈 무국적", "외국 선거개입 주권",
+            "국제투자중재 규제주권", "외국국가면제 재판청구권",
+            "외교관 범죄 피해자 구제", "범죄인 인도 자국민 보호",
+            "외국판결 승인 헌법질서", "재외국민 선거 주재국 제한",
+            "해외입양인 국적 회복", "북한 주민 국적 난민 지위",
+            "주둔군지위협정 형사재판권", "국제기구 결정 헌법 주권",
+            "외국 정치자금 선거 영향", "비엔나협약 영사통보 권리",
+        ),
     },
     "D02": {
         "lane": "democracy_rights_values",
         "terms": "인권 표현 자유",
         "hosts": ("humanrights.go.kr", "minbyun.or.kr", "peoplepower21.org"),
         "actors": ("미국", "중국", "유엔", "외국 정부"),
+        "motifs": (
+            "표현의 자유 외국 압박", "난민 강제송환", "국제 인권권고 이행",
+            "이주노동자 국제협약", "해외 감시 개인정보", "사법독립 국제기준",
+        ),
     },
     "D03": {
         "lane": "territory_maritime_airspace",
         "terms": "영토 관할 해양",
         "hosts": ("kmi.re.kr", "mofa.go.kr", "nars.go.kr"),
         "actors": ("일본", "중국", "북한", "국제법"),
+        "motifs": (
+            "배타적경제수역 경계획정", "대륙붕 공동개발 관할권",
+            "범죄인 인도 재판관할", "공역 비행정보구역",
+            "외국 선박 단속 관할", "영해 해양조사 동의",
+        ),
     },
     "D04": {
         "lane": "history_responsibility_memory",
         "terms": "역사 책임 배상",
         "hosts": ("nahf.or.kr", "history.go.kr", "scourt.go.kr"),
         "actors": ("일본", "중국", "러시아", "유엔"),
+        "motifs": (
+            "강제동원 유골 반환", "피해자 배상 소멸시효",
+            "민간인 학살 진상규명", "식민지 기록 반환 공개",
+            "역사 교과서 왜곡 정정", "재외동포 강제이주 책임",
+        ),
     },
     "D05": {
         "lane": "culture_language_identity",
         "terms": "문화유산 정체성 반환",
         "hosts": ("khs.go.kr", "mcst.go.kr", "korean.go.kr"),
         "actors": ("일본", "중국", "유네스코", "해외 박물관"),
+        "motifs": (
+            "문화재 반환 소유권", "무형유산 등재 기원",
+            "해외 전시 표기 정정", "콘텐츠 저작권 해외 플랫폼",
+            "문화콘텐츠 검열 시장접근", "한국어 지명 표기 국제표준",
+        ),
     },
     "D08": {
         "lane": "technology_data_science",
         "terms": "데이터 기술 규제",
         "hosts": ("kisdi.re.kr", "msit.go.kr", "kisa.or.kr"),
         "actors": ("미국", "중국", "EU", "해외 플랫폼"),
+        "motifs": (
+            "국경간 데이터 이전", "인공지능 저작권 해외 플랫폼",
+            "반도체 수출통제", "사이버 관할권 전자증거",
+            "통신망 기술표준", "클라우드 정부 데이터",
+        ),
     },
 }
 
@@ -267,29 +301,38 @@ def build_web_queries() -> list[dict[str, Any]]:
             require_korea_signal=False,
         ))
 
-    # Search institutional archives by domain and broad actor class.  The
-    # Korean host itself supplies the domestic context, so requiring the word
-    # "한국" in every title would incorrectly discard many useful records.
+    # Search institutional archives with issue-neutral but concrete decision
+    # motifs. Actor-only queries mostly return home pages, staff directories,
+    # and documents that merely mention a country.  Pairing an actor with a
+    # reusable legal/policy motif raises precision without naming a particular
+    # controversy from model memory. A parallel cross-host query keeps recall
+    # when the relevant record lives outside the three expected institutions.
     for domain_id, spec in DOMAIN_INSTITUTION_ACTORS.items():
         for host_index, host in enumerate(spec["hosts"]):
-            for actor_index, actor in enumerate(spec["actors"]):
+            for motif_index, motif in enumerate(spec["motifs"]):
+                actor = spec["actors"][
+                    (host_index + motif_index) % len(spec["actors"])
+                ]
                 rows.append(query_row(
                     spec["lane"], "ko",
-                    # Dedicated institutional hosts already constrain the
-                    # subject matter.  Adding three abstract domain terms made
-                    # search engines require an unrealistically narrow title;
-                    # the actor-only archive sweep lets fetched-body event
-                    # extraction perform the substantive filtering instead.
-                    f"site:{host} {actor}",
+                    f"site:{host} {actor} {motif}",
                     (
                         "naver_web"
-                        if (host_index + actor_index) % 2 == 0
+                        if (host_index + motif_index) % 2 == 0
                         else "bing_web"
                     ),
-                    "web_census_domain_institution_actor", "KR",
+                    "web_census_domain_institution_motif", "KR",
                     domain_id=domain_id,
                     require_korea_signal=False,
                 ))
+        for motif_index, motif in enumerate(spec["motifs"]):
+            actor = spec["actors"][motif_index % len(spec["actors"])]
+            rows.append(query_row(
+                spec["lane"], "ko", f"한국 {actor} {motif}",
+                "naver_news" if motif_index % 2 == 0 else "yahoo_web",
+                "web_census_domain_cross_host_motif", "KR",
+                domain_id=domain_id,
+            ))
 
     # Foreign and international institutional dockets are searched directly
     # for Korea, independently of the Korean source list.
@@ -386,7 +429,10 @@ def main() -> int:
     parser.add_argument("--web-config", type=Path, required=True)
     parser.add_argument("--hypothesis-requests", type=Path, required=True)
     parser.add_argument("--report", type=Path, required=True)
-    parser.add_argument("--max-queries", type=int, default=300)
+    # The concrete institutional-motif sweep currently emits 382 one-engine
+    # queries. Keep a bounded default while leaving headroom for small,
+    # reviewed additions to the census.
+    parser.add_argument("--max-queries", type=int, default=500)
     args = parser.parse_args()
 
     queries = build_web_queries()

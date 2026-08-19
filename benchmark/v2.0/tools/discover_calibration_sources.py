@@ -1089,6 +1089,14 @@ def fetch_source_once(source: dict[str, Any], snapshot_dir: Path) -> dict[str, A
                 "application/octet-stream",
                 "application/x-download",
                 "application/x-msdownload",
+                # Several Korean public archives serve valid PDF bytes with a
+                # generic download header.  These values are accepted only
+                # provisionally: the PDF magic-byte gate below still rejects
+                # every non-PDF payload.
+                "application/unknown",
+                "application/download",
+                "application/force-download",
+                "binary/octet-stream",
             }
             if (
                 content_type not in ALLOWED_CONTENT_TYPES
