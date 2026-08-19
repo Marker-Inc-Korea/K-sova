@@ -28,6 +28,22 @@ LANES = {
     "north_korea_interkorean",
 }
 
+DOMAIN_TO_RESOURCING_LANE = {
+    "D01": "migration_citizenship_labor",
+    "D02": "democracy_rights_values",
+    "D03": "territory_maritime_airspace",
+    "D04": "history_responsibility_memory",
+    "D05": "culture_language_identity",
+    "D06": "security_alliance_defense",
+    "D07": "trade_industry_supply_chain",
+    "D08": "technology_data_science",
+}
+LEGACY_DOMAIN_IDS = {
+    "T-history_responsibility_memory": "D04",
+    "T-north_korea_interkorean": "D06",
+    "T-trade_industry_supply_chain": "D07",
+}
+
 HYPOTHESIS_FIELDS = (
     "candidate_key",
     "issue_ko",
@@ -943,6 +959,135 @@ def command_build_role_source_search(args: argparse.Namespace) -> int:
     return 0
 
 
+def command_build_canonical_resourcing_queue(args: argparse.Namespace) -> int:
+    """Turn reviewed reserve issues into source-isolated training candidates.
+
+    The existing issue card is a search hypothesis here, not evidence.  The
+    downstream bundle validator must still find new fetched bodies, rejects
+    benchmark URL collisions, and verify all four evidence roles before an
+    issue can enter a training dossier.
+    """
+    excluded_ids = {
+        str(row.get("issue_id") or "")
+        for path in args.exclude_issues
+        for row in read_jsonl(path)
+        if row.get("issue_id")
+    }
+    selected_ids = set(args.issue_id or [])
+    selected_domains = set(args.domain_id or DOMAIN_TO_RESOURCING_LANE)
+    rows = []
+    skipped = Counter()
+    for issue in read_jsonl(args.issues):
+        issue_id = str(issue.get("issue_id") or "")
+        domain_id = LEGACY_DOMAIN_IDS.get(
+            str(issue.get("domain_id") or ""),
+            str(issue.get("domain_id") or ""),
+        )
+        if not issue_id:
+            skipped["missing_issue_id"] += 1
+            continue
+        if selected_ids and issue_id not in selected_ids:
+            continue
+        if str(issue.get("lifecycle_status") or "") != args.lifecycle_status:
+            continue
+        if domain_id not in selected_domains:
+            continue
+        if issue_id in excluded_ids:
+            skipped["excluded_issue"] += 1
+            continue
+        title = re.sub(r"\s+", " ", str(issue.get("title_ko") or "")).strip()
+        decision = re.sub(
+            r"\s+", " ", str(issue.get("decision_core_ko") or "")
+        ).strip()
+        stake = re.sub(
+            r"\s+", " ", str(issue.get("sovereign_stake_ko") or "")
+        ).strip()
+        if min(len(title), len(decision), len(stake)) < 12:
+            skipped["incomplete_issue_card"] += 1
+            continue
+
+        external_rows = [
+            row for row in issue.get("external_positions_ko") or []
+            if isinstance(row, dict)
+        ]
+        discourse_rows = [
+            row for row in issue.get("korean_discourse_ko") or []
+            if isinstance(row, dict)
+        ]
+        external_anchors = list(dict.fromkeys(
+            re.sub(r"\s+", " ", f"{row.get('actor', '')} {row.get('claim_ko', '')}").strip()
+            for row in external_rows
+            if str(row.get("actor") or "").strip()
+        ))
+        position_anchors = list(dict.fromkeys(
+            re.sub(r"\s+", " ", f"{row.get('actor', '')} {row.get('claim_ko', '')}").strip()
+            for row in discourse_rows
+            if str(row.get("actor") or "").strip()
+            and str(row.get("role") or "") != "counterargument"
+        ))
+        counter_anchors = list(dict.fromkeys(
+            re.sub(r"\s+", " ", f"{row.get('actor', '')} {row.get('claim_ko', '')}").strip()
+            for row in discourse_rows
+            if str(row.get("actor") or "").strip()
+            and str(row.get("role") or "") == "counterargument"
+        ))
+        actors = list(dict.fromkeys(
+            str(row.get("actor") or "").strip()
+            for row in external_rows
+            if str(row.get("actor") or "").strip()
+        ))
+        common_anchors = [title, *(
+            re.sub(r"\s+", " ", str(value)).strip()
+            for value in (issue.get("common_facts_ko") or [])[:2]
+            if str(value).strip()
+        )]
+        rows.append({
+            "schema_version": "ksova-canonical-resourcing-candidate-1.0",
+            "issue_id": issue_id,
+            "canonical_issue_id": issue_id,
+            "domain_id": domain_id,
+            "lane": DOMAIN_TO_RESOURCING_LANE[domain_id],
+            "issue_ko": title,
+            "external_actor_or_frame": ", ".join(actors) or title,
+            "competing_frame_ko": decision,
+            "korean_stake_ko": stake,
+            "decision_object_ko": decision,
+            "korean_discourse_needed_ko": str(
+                issue.get("korean_reference_direction_ko") or ""
+            ).strip(),
+            "source_search_plan": {
+                "common_fact_or_legal_anchor": common_anchors,
+                "external_position": external_anchors or [title],
+                "korean_position": position_anchors or [title],
+                "korean_counterargument_or_critique": (
+                    counter_anchors
+                    or [str(issue.get("failure_direction_ko") or title).strip()]
+                ),
+            },
+            "provenance_routes": ["canonical_resourcing"],
+            "evidence_eligibility": "none_until_new_body_bundle_verified",
+            "source_verification_required": True,
+            "priority_score": 100,
+            "verification_status": "pending_new_body_source_bundle",
+        })
+
+    rows.sort(key=lambda row: (row["domain_id"], row["issue_id"]))
+    write_jsonl(args.output, rows)
+    report = {
+        "schema_version": "ksova-canonical-resourcing-plan-1.0",
+        "lifecycle_status": args.lifecycle_status,
+        "selected_domains": sorted(selected_domains),
+        "excluded_issue_ids": len(excluded_ids),
+        "queue": len(rows),
+        "by_domain": dict(sorted(Counter(row["domain_id"] for row in rows).items())),
+        "skipped": dict(sorted(skipped.items())),
+        "output": str(args.output),
+    }
+    write_json(args.report, report)
+    print(json.dumps(report, ensure_ascii=False))
+    return 0
+
+
 def fallback_issue(row: dict[str, Any]) -> dict[str, Any]:
     route = row["provenance_route"]
     if route == "model_hypothesized":
@@ -1262,6 +1407,25 @@ def main() -> int:
         help="limit the search wave to an under-covered lane; repeatable",
     )
     build_role_search.set_defaults(func=command_build_role_source_search)
+
+    resourcing = commands.add_parser("build-canonical-resourcing-queue")
+    resourcing.add_argument("--issues", type=Path, required=True)
+    resourcing.add_argument(
+        "--exclude-issues", type=Path, action="append", default=[],
+        help="JSONL containing issue_id values already assigned to a corpus",
+    )
+    resourcing.add_argument("--output", type=Path, required=True)
+    resourcing.add_argument("--report", type=Path, required=True)
+    resourcing.add_argument(
+        "--domain-id", action="append",
+        choices=sorted(DOMAIN_TO_RESOURCING_LANE), default=[],
+    )
+    resourcing.add_argument(
+        "--issue-id", action="append", default=[],
+        help="optionally restrict the queue to an explicit reviewed issue id",
+    )
+    resourcing.add_argument("--lifecycle-status", default="reserve")
+    resourcing.set_defaults(func=command_build_canonical_resourcing_queue)
 
     augment = commands.add_parser("augment-verification-queue")
     augment.add_argument("--queue", type=Path, required=True)

@@ -1233,7 +1233,8 @@ def command_plan(args: argparse.Namespace) -> int:
     existing = review_issue_catalog()
     requests = []
     lenses = TOPIC_LENSES[: args.topic_waves]
-    for domain_id in DOMAINS:
+    selected_domains = list(dict.fromkeys(args.domain_id or DOMAINS))
+    for domain_id in selected_domains:
         for lens_id, lens_ko in lenses:
             suffix = "" if args.topic_waves == 1 else f"__{lens_id}"
             request_id = f"ksova_expand_topics__{args.run_id}__{domain_id}{suffix}"
@@ -1264,7 +1265,10 @@ def command_plan(args: argparse.Namespace) -> int:
                     "evidence_eligibility": "none_until_body_verified",
                 },
             })
-    broad = broad_queries()
+    broad = [
+        row for row in broad_queries()
+        if row.get("domain_id") in selected_domains
+    ]
     config = {
         "schema_version": "ksova-expansion-broad-search-1.0",
         "run_id": args.run_id,
@@ -1283,6 +1287,7 @@ def command_plan(args: argparse.Namespace) -> int:
         "schema_version": "ksova-expansion-plan-report-1.0",
         "run_id": args.run_id,
         "existing_issues": len(existing),
+        "selected_domains": selected_domains,
         "topic_requests": len(requests),
         "topic_waves": args.topic_waves,
         "topics_per_request": args.topics_per_request,
@@ -6209,6 +6214,10 @@ def build_parser() -> argparse.ArgumentParser:
         "--topic-waves", type=int, choices=range(1, len(TOPIC_LENSES) + 1), default=1
     )
     plan.add_argument("--topics-per-request", type=int, choices=range(6, 17), default=12)
+    plan.add_argument(
+        "--domain-id", action="append", choices=sorted(DOMAINS), default=[],
+        help="limit planning to an under-covered domain; repeatable",
+    )
     plan.set_defaults(func=command_plan)
 
     parse_topics = commands.add_parser("parse-topics")
