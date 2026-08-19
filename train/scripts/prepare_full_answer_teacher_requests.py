@@ -227,6 +227,10 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--portfolio-issues", type=Path, required=True)
     parser.add_argument("--portfolio-sources", type=Path, required=True)
+    parser.add_argument(
+        "--source-backfills", type=Path, action="append", default=[],
+        help="Resolver JSONL whose lead_ids map fetched bodies to portfolio source IDs.",
+    )
     parser.add_argument("--benchmark-items", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--report", type=Path, required=True)
@@ -244,6 +248,34 @@ def main() -> int:
     if len(sources) != len(source_rows):
         raise ValueError("portfolio sources contain missing or duplicate source IDs")
 
+    backfilled_source_ids: set[str] = set()
+    for path in args.source_backfills:
+        for row in read_jsonl(path):
+            fetched = row.get("source") if isinstance(row.get("source"), dict) else row
+            retrieval = fetched.get("retrieval") or {}
+            fetched_body = source_body(fetched)
+            fetched_url = str(
+                retrieval.get("source_url") or fetched.get("url") or ""
+            ).rstrip("/")
+            for source_id in row.get("lead_ids") or [fetched.get("source_id")]:
+                source_id = str(source_id or "")
+                original = sources.get(source_id)
+                if original is None:
+                    raise ValueError(f"backfill references unknown source {source_id}")
+                original_url = str(original.get("url") or "").rstrip("/")
+                if not fetched_url or fetched_url != original_url:
+                    raise ValueError(
+                        f"backfill URL mismatch for {source_id}: "
+                        f"{fetched_url!r} != {original_url!r}"
+                    )
+                if len(fetched_body) > len(source_body(original)):
+                    sources[source_id] = {
+                        **original,
+                        "content_text": fetched_body,
+                        "retrieval": retrieval,
+                    }
+                    backfilled_source_ids.add(source_id)
+
     benchmark_rows = read_jsonl(args.benchmark_items)
     if len(benchmark_rows) != 480:
         raise ValueError("unexpected benchmark item count")
@@ -252,6 +284,7 @@ def main() -> int:
     requests = []
     prompt_chars = []
     source_counts = []
+    short_sources_skipped: set[str] = set()
     by_domain: Counter[str] = Counter()
     for dossier in sorted(dossiers, key=lambda row: str(row["issue_id"])):
         issue = dossier.get("issue_card") or {}
@@ -265,9 +298,8 @@ def main() -> int:
                 raise ValueError(f"{dossier['issue_id']}: missing source {source_id}")
             body = source_body(source)
             if len(body) < 300:
-                raise ValueError(
-                    f"{dossier['issue_id']}: source body too short {source_id} ({len(body)})"
-                )
+                short_sources_skipped.add(source_id)
+                continue
             tier = str(
                 (source.get("provenance") or {}).get("reliability_tier")
                 or source.get("reliability_tier") or ""
@@ -279,6 +311,10 @@ def main() -> int:
                 - order / 1000
             )
             available.append((score, source_id, source))
+        if not available:
+            raise ValueError(
+                f"{dossier['issue_id']}: no source body reaches 300 characters"
+            )
         available.sort(key=lambda row: (-row[0], row[1]))
         chosen = available[: args.max_sources_per_issue]
         evidence = [
@@ -333,6 +369,9 @@ def main() -> int:
         "benchmark_items_sha256": benchmark_hash,
         "portfolio_issues_sha256": file_sha256(args.portfolio_issues),
         "portfolio_sources_sha256": file_sha256(args.portfolio_sources),
+        "source_backfill_files": [str(path) for path in args.source_backfills],
+        "backfilled_source_ids": sorted(backfilled_source_ids),
+        "short_sources_skipped": sorted(short_sources_skipped),
         "output": str(args.output),
     }
     write_jsonl(args.output, requests)
