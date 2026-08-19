@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 from collections import Counter
+import copy
 from difflib import SequenceMatcher
 import hashlib
 import json
@@ -113,33 +114,43 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--requests", type=Path, required=True)
     parser.add_argument("--responses", type=Path, required=True)
+    parser.add_argument("--response-overrides", type=Path, action="append", default=[])
     parser.add_argument("--benchmark-items", type=Path, required=True)
     parser.add_argument("--accepted", type=Path, required=True)
     parser.add_argument("--rejected", type=Path, required=True)
     parser.add_argument("--report", type=Path, required=True)
+    parser.add_argument("--retry-requests", type=Path)
+    parser.add_argument(
+        "--retry-only-present",
+        action="store_true",
+        help="Exclude requests with no response yet when preparing an in-flight retry.",
+    )
     args = parser.parse_args()
 
-    outputs = (args.accepted, args.rejected, args.report)
+    outputs = (args.accepted, args.rejected, args.report) + (
+        (args.retry_requests,) if args.retry_requests else ()
+    )
     existing = [str(path) for path in outputs if path.exists()]
     if existing:
         raise FileExistsError(f"refusing to overwrite outputs: {existing}")
 
     requests = read_jsonl(args.requests)
-    responses = read_jsonl(args.responses)
+    response_inputs = [args.responses, *args.response_overrides]
+    responses_by_input = [read_jsonl(path) for path in response_inputs]
+    responses = [row for group in responses_by_input for row in group]
     benchmarks = read_jsonl(args.benchmark_items)
     if len(requests) != 150 or len({row.get("id") for row in requests}) != 150:
         raise ValueError("expected 150 unique teacher requests")
     if len(benchmarks) != 480:
         raise ValueError("expected frozen 480-item benchmark")
     response_by_id: dict[str, dict[str, Any]] = {}
-    duplicate_response_ids: list[str] = []
-    for row in responses:
-        request_id = str(row.get("id") or "")
-        if request_id in response_by_id:
-            duplicate_response_ids.append(request_id)
-        response_by_id[request_id] = row
-    if duplicate_response_ids:
-        raise ValueError(f"duplicate response IDs: {sorted(set(duplicate_response_ids))}")
+    for input_index, group in enumerate(responses_by_input):
+        input_ids = [str(row.get("id") or "") for row in group]
+        if any(not value for value in input_ids) or len(input_ids) != len(set(input_ids)):
+            raise ValueError(f"missing or duplicate response IDs in {response_inputs[input_index]}")
+        for row in group:
+            # Later files are explicit retry overrides of earlier responses.
+            response_by_id[str(row["id"])] = row
 
     benchmark_questions = {
         normalized_text(str(row.get("question_ko") or ""))
@@ -153,6 +164,8 @@ def main() -> int:
     answer_lengths: list[int] = []
     question_lengths: list[int] = []
     target_band_answers = 0
+    retry_request_ids: set[str] = set()
+    retry_reasons: dict[str, set[str]] = {}
     seen_question: dict[str, str] = {}
     seen_answer: dict[str, str] = {}
 
@@ -173,6 +186,8 @@ def main() -> int:
             if not str(response.get("response") or "").strip():
                 response_reasons.append("empty_response")
         if response_reasons:
+            retry_request_ids.add(request_id)
+            retry_reasons.setdefault(request_id, set()).update(response_reasons)
             response_failure_counts.update(response_reasons)
             rejected.append({
                 "request_id": request_id,
@@ -184,6 +199,8 @@ def main() -> int:
         try:
             payload = parse_object(str(response["response"]))
         except (json.JSONDecodeError, ValueError) as exc:
+            retry_request_ids.add(request_id)
+            retry_reasons.setdefault(request_id, set()).add("json_parse_failure")
             response_failure_counts["json_parse_failure"] += 1
             rejected.append({
                 "request_id": request_id,
@@ -194,6 +211,8 @@ def main() -> int:
             })
             continue
         if str(payload.get("issue_id") or "") != issue_id:
+            retry_request_ids.add(request_id)
+            retry_reasons.setdefault(request_id, set()).add("issue_id_mismatch")
             response_failure_counts["issue_id_mismatch"] += 1
             rejected.append({
                 "request_id": request_id,
@@ -204,6 +223,8 @@ def main() -> int:
             continue
         examples = payload.get("examples")
         if not isinstance(examples, list) or len(examples) != 3:
+            retry_request_ids.add(request_id)
+            retry_reasons.setdefault(request_id, set()).add("not_exactly_three_examples")
             response_failure_counts["not_exactly_three_examples"] += 1
             rejected.append({
                 "request_id": request_id,
@@ -217,6 +238,8 @@ def main() -> int:
             for example in examples if isinstance(example, dict)
         }
         if set(by_variant) != set(VARIANTS) or len(by_variant) != 3:
+            retry_request_ids.add(request_id)
+            retry_reasons.setdefault(request_id, set()).add("variant_set_invalid")
             response_failure_counts["variant_set_invalid"] += 1
             rejected.append({
                 "request_id": request_id,
@@ -282,6 +305,8 @@ def main() -> int:
                 reasons.append("same_issue_answer_too_similar")
             reasons = sorted(set(reasons))
             if reasons:
+                retry_request_ids.add(request_id)
+                retry_reasons.setdefault(request_id, set()).update(reasons)
                 example_failure_counts.update(reasons)
                 rejected.append({
                     "request_id": request_id,
@@ -338,6 +363,9 @@ def main() -> int:
         "schema_version": "ksova-full-answer-teacher-parse-report-1.0",
         "requests": len(requests),
         "responses": len(responses),
+        "response_rows": len(responses),
+        "effective_responses": len(response_by_id),
+        "response_override_files": len(args.response_overrides),
         "accepted_examples": len(accepted),
         "expected_examples": len(requests) * 3,
         "accepted_by_domain": dict(sorted(Counter(
@@ -350,6 +378,7 @@ def main() -> int:
         "example_failure_counts": dict(sorted(example_failure_counts.items())),
         "missing_response_ids": missing_response_ids,
         "unexpected_response_ids": unexpected_response_ids,
+        "retry_request_ids": sorted(retry_request_ids),
         "answer_chars": {
             "min": min(answer_lengths) if answer_lengths else 0,
             "max": max(answer_lengths) if answer_lengths else 0,
@@ -363,19 +392,52 @@ def main() -> int:
         },
         "hashes": {
             "requests_sha256": file_sha256(args.requests),
-            "responses_sha256": file_sha256(args.responses),
+            "response_inputs_sha256": {
+                str(path): file_sha256(path) for path in response_inputs
+            },
             "benchmark_sha256": file_sha256(args.benchmark_items),
         },
         "outputs": {
             "accepted": str(args.accepted),
             "rejected": str(args.rejected),
+            "retry_requests": str(args.retry_requests) if args.retry_requests else None,
         },
     }
     write_jsonl(args.accepted, accepted)
     write_jsonl(args.rejected, rejected)
+    if args.retry_requests:
+        selected_retry_ids = retry_request_ids
+        if args.retry_only_present:
+            selected_retry_ids = retry_request_ids & set(response_by_id)
+        retry_rows = []
+        for request in requests:
+            request_id = str(request["id"])
+            if request_id not in selected_retry_ids:
+                continue
+            retry = copy.deepcopy(request)
+            metadata = retry.setdefault("metadata", {})
+            issue_id = str(metadata.get("issue_id") or "")
+            reasons = sorted(retry_reasons.get(request_id) or {"generation_retry"})
+            correction = (
+                "\n\n재시도 교정 지시: 이전 출력에 다음 구조 오류가 있었다: "
+                + ", ".join(reasons)
+                + f". issue_id는 반드시 정확히 '{issue_id}'로 복사하고, "
+                "JSON 문자열 안에는 유효하지 않은 역슬래시 이스케이프를 쓰지 말라. "
+                "원래의 내용·근거·세 변형 요건은 그대로 유지하면서 JSON 객체 전체를 새로 생성하라."
+            )
+            retry["messages"][0]["content"] = str(
+                retry["messages"][0]["content"]
+            ) + correction
+            metadata["retry_of_request_id"] = request_id
+            metadata["retry_reasons"] = reasons
+            retry_rows.append(retry)
+        write_jsonl(
+            args.retry_requests,
+            retry_rows,
+        )
     write_json(args.report, report)
     print(json.dumps(report, ensure_ascii=False))
-    return 1 if missing_response_ids or unexpected_response_ids else 0
+    return 1 if missing_response_ids or unexpected_response_ids or retry_request_ids else 0
 
 
 if __name__ == "__main__":

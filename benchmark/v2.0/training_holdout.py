@@ -118,6 +118,104 @@ def material_is_machine_accepted(material: dict[str, Any]) -> bool:
     return dual_pass or glm_pass
 
 
+def issue_semantic_text(issue: dict[str, Any]) -> str:
+    """Compose the decision-bearing fields used for issue-level holdout checks."""
+    parts: list[Any] = [
+        issue.get("title_ko"),
+        issue.get("decision_core_ko"),
+        issue.get("sovereign_stake_ko"),
+        issue.get("korean_reference_direction_ko"),
+        issue.get("novelty_key_ko"),
+    ]
+    external_positions = issue.get("external_positions_ko") or []
+    for position in external_positions:
+        if isinstance(position, dict):
+            parts.extend((position.get("actor"), position.get("claim_ko")))
+        elif position:
+            parts.append(position)
+    return "\n".join(str(value).strip() for value in parts if value)
+
+
+def command_build_issue_input(args: argparse.Namespace) -> int:
+    benchmark_items = read_jsonl(args.benchmark_items)
+    issue_registry = read_jsonl(args.issue_registry)
+    selected_wrappers = read_jsonl(args.selected_issues)
+
+    registry: dict[str, dict[str, Any]] = {}
+    for issue in issue_registry:
+        issue_id = str(issue.get("issue_id") or "")
+        if not issue_id or issue_id in registry:
+            raise ValueError(f"missing or duplicate issue_id in registry: {issue_id!r}")
+        registry[issue_id] = issue
+
+    benchmark_ids = sorted({str(item.get("issue_id") or "") for item in benchmark_items})
+    if not benchmark_ids or "" in benchmark_ids:
+        raise ValueError("benchmark items contain a missing issue_id")
+    missing_benchmark = sorted(set(benchmark_ids) - set(registry))
+    if missing_benchmark:
+        raise ValueError(f"benchmark issues missing from registry: {missing_benchmark[:5]}")
+
+    selected: list[tuple[dict[str, Any], list[str]]] = []
+    for wrapper in selected_wrappers:
+        issue = wrapper.get("issue_card") if isinstance(wrapper.get("issue_card"), dict) else wrapper
+        if wrapper.get("source_isolated_from_frozen_benchmark_480") is False:
+            raise ValueError(f"selected issue lacks exact-source isolation: {issue.get('issue_id')}")
+        selected_source_ids = wrapper.get("source_ids") or issue.get("source_ids") or []
+        selected.append((issue, [str(value) for value in selected_source_ids]))
+    selected_ids = [str(issue.get("issue_id") or "") for issue, _ in selected]
+    if any(not issue_id for issue_id in selected_ids) or len(selected_ids) != len(set(selected_ids)):
+        raise ValueError("selected issue_id values must be nonempty and unique")
+    exact_overlap = sorted(set(benchmark_ids) & set(selected_ids))
+    if exact_overlap:
+        raise ValueError(f"exact benchmark/training issue overlap: {exact_overlap[:5]}")
+
+    records: list[dict[str, Any]] = []
+    for issue_id in benchmark_ids:
+        issue = registry[issue_id]
+        records.append({
+            "schema_version": "ksova-training-holdout-record-1.0",
+            "record_id": "benchmark__" + issue_id,
+            "role": "benchmark_holdout",
+            "entity_id": issue_id,
+            "title_ko": issue.get("title_ko"),
+            "domain_or_lane": issue.get("domain_id"),
+            "source_ids": issue.get("source_ids") or [],
+            "source_keys": ["source_id:" + str(value) for value in issue.get("source_ids") or []],
+            "text": issue_semantic_text(issue),
+        })
+    for issue, selected_source_ids in selected:
+        issue_id = str(issue["issue_id"])
+        records.append({
+            "schema_version": "ksova-training-holdout-record-1.0",
+            "record_id": "training_issue__" + issue_id,
+            "role": "training_material_candidate",
+            "entity_id": issue_id,
+            "title_ko": issue.get("title_ko"),
+            "domain_or_lane": issue.get("domain_id"),
+            "source_ids": selected_source_ids,
+            "source_keys": ["source_id:" + value for value in selected_source_ids],
+            "text": issue_semantic_text(issue),
+        })
+
+    record_ids = [row["record_id"] for row in records]
+    if len(record_ids) != len(set(record_ids)):
+        raise ValueError("duplicate holdout record_id")
+    write_jsonl(args.output, records)
+    report = {
+        "schema_version": "ksova-training-issue-holdout-input-report-1.0",
+        "benchmark_items": len(benchmark_items),
+        "benchmark_issues": len(benchmark_ids),
+        "training_issues": len(selected),
+        "exact_issue_overlap": len(exact_overlap),
+        "records": len(records),
+        "output": str(args.output.resolve()),
+        "output_sha256": sha256(args.output),
+    }
+    write_json(args.report, report)
+    print(json.dumps(report, ensure_ascii=False))
+    return 0
+
+
 def command_build(args: argparse.Namespace) -> int:
     issues = read_jsonl(args.issues)
     materials = read_jsonl(args.materials)
@@ -259,10 +357,13 @@ def command_analyze(args: argparse.Namespace) -> int:
         pairs.append({
             "schema_version": "ksova-training-holdout-nearest-pair-1.0",
             "material_id": material["entity_id"],
+            "material_title_ko": material.get("title_ko"),
             "material_lane": material.get("domain_or_lane"),
             "cosine_nearest_issue_id": benchmark[cosine_index]["entity_id"],
+            "cosine_nearest_issue_title_ko": benchmark[cosine_index].get("title_ko"),
             "cosine_similarity": round(cosine_score, 6),
             "lexical_nearest_issue_id": benchmark[lexical_index]["entity_id"],
+            "lexical_nearest_issue_title_ko": benchmark[lexical_index].get("title_ko"),
             "lexical_jaccard": round(lexical_score, 6),
             "shared_source_keys": shared_sources,
         })
@@ -314,6 +415,13 @@ def parser() -> argparse.ArgumentParser:
     build.add_argument("--output", type=Path, required=True)
     build.add_argument("--report", type=Path, required=True)
     build.set_defaults(func=command_build)
+    build_issue = commands.add_parser("build-issue-input")
+    build_issue.add_argument("--benchmark-items", type=Path, required=True)
+    build_issue.add_argument("--issue-registry", type=Path, required=True)
+    build_issue.add_argument("--selected-issues", type=Path, required=True)
+    build_issue.add_argument("--output", type=Path, required=True)
+    build_issue.add_argument("--report", type=Path, required=True)
+    build_issue.set_defaults(func=command_build_issue_input)
     analyze = commands.add_parser("analyze")
     analyze.add_argument("--records", type=Path, required=True)
     analyze.add_argument("--embeddings", type=Path, required=True)

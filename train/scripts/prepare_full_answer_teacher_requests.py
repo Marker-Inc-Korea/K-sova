@@ -236,6 +236,10 @@ def main() -> int:
     parser.add_argument("--report", type=Path, required=True)
     parser.add_argument("--max-sources-per-issue", type=int, default=4)
     parser.add_argument("--max-tokens", type=int, default=8192)
+    parser.add_argument(
+        "--only-issue-id", action="append", default=[],
+        help="Emit only these issue IDs after validating the complete 150-issue portfolio.",
+    )
     args = parser.parse_args()
 
     if args.output.exists() or args.report.exists():
@@ -243,6 +247,16 @@ def main() -> int:
     dossiers = read_jsonl(args.portfolio_issues)
     if len(dossiers) != 150 or len({row.get("issue_id") for row in dossiers}) != 150:
         raise ValueError("portfolio must contain 150 unique issues")
+    requested_issue_ids = {str(value) for value in args.only_issue_id}
+    available_issue_ids = {str(row.get("issue_id") or "") for row in dossiers}
+    if requested_issue_ids - available_issue_ids:
+        raise ValueError(
+            f"requested issue IDs are absent: {sorted(requested_issue_ids - available_issue_ids)}"
+        )
+    selected_dossiers = [
+        row for row in dossiers
+        if not requested_issue_ids or str(row.get("issue_id") or "") in requested_issue_ids
+    ]
     source_rows = read_jsonl(args.portfolio_sources)
     sources = {str(row.get("source_id") or ""): row for row in source_rows}
     if len(sources) != len(source_rows):
@@ -286,7 +300,7 @@ def main() -> int:
     source_counts = []
     short_sources_skipped: set[str] = set()
     by_domain: Counter[str] = Counter()
-    for dossier in sorted(dossiers, key=lambda row: str(row["issue_id"])):
+    for dossier in sorted(selected_dossiers, key=lambda row: str(row["issue_id"])):
         issue = dossier.get("issue_card") or {}
         keywords = issue_keywords(issue)
         support = source_support_map(issue)
@@ -352,6 +366,8 @@ def main() -> int:
     report = {
         "schema_version": "ksova-full-answer-teacher-plan-1.0",
         "requests": len(requests),
+        "portfolio_issues": len(dossiers),
+        "issue_filter": sorted(requested_issue_ids),
         "expected_examples": len(requests) * 3,
         "variants": list(VARIANTS),
         "by_domain": dict(sorted(by_domain.items())),
