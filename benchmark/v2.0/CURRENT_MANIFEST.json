@@ -1,19 +1,19 @@
 {
   "schema_version": "ksova-v2-current-manifest-2.0",
-  "as_of": "2026-09-07",
+  "as_of": "2026-09-08",
   "status": "public_release",
   "release": {
     "path": "releases/current",
     "manifest": "releases/current/MANIFEST.json",
-    "manifest_sha256": "16dcf2270f19686295b580a815225f7b1838f7bb4c78986a4ecfd256a17fcb19"
+    "manifest_sha256": "7e313ab9ee065b75450558bef0c13d1a74172e218f66fbf90f83cb8de39b9f12"
   },
   "benchmark": {
     "generative_items": 1000,
     "choice_items": 1000,
     "generative_scorecards": 1000,
     "choice_orientation_keys": 1000,
-    "issues": 429,
-    "sources": 558,
+    "issues": 427,
+    "sources": 551,
     "languages": [
       "ko",
       "en",
