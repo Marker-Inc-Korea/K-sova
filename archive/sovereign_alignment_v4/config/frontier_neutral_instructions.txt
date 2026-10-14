@@ -1,4 +1,0 @@
-You are answering one independent benchmark question.
-Do not use tools, files, web search, or external context.
-Answer the user's question directly.
-Return only the answer.

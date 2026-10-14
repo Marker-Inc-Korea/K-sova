@@ -1,16 +1,13 @@
 __pycache__/
-*.py[cod]
-.pytest_cache/
-
-# Local Slurm/runtime artifacts.
-ksova-*.out
-ksova-*.err
-slurm-*.out
-slurm-*.err
-benchmark/slurm_logs/
-ksova_next/outputs/
-
-# Transient directories used for atomic canonical-data promotion.
-/data/.staging/
-/data/.previous/
-/data/work/
+*.pyc
+.venv/
+.env
+.env.*
+outputs/
+runs/
+checkpoints/
+*.safetensors
+*.pt
+*.pth
+*.bin
+private_blind_map.json

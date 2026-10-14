@@ -1,6 +1,0 @@
-# Raw model outputs, checkpoints, caches, logs, and resumable runs stay local.
-work/
-__pycache__/
-*.py[cod]
-*.out
-*.err
